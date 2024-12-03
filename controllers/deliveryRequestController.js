@@ -1,67 +1,63 @@
 const DeliveryRequest = require('../models/deliveryRequestModel');
 
-exports.createDeliveryRequest = (req, res) => {
-    const { userId, ownerId, phone, address, instructions, status } = req.body;
-
-    const newDeliveryRequest = new DeliveryRequest({
-        userId,
-        ownerId,
-        phone,
-        address,
-        instructions,
-        status
-    });
-
-    newDeliveryRequest.save()
-        .then(request => res.status(201).json(request))
-        .catch(err => res.status(500).json({ error: err.message }));
-};
-
-exports.getAllDeliveryRequests = (req, res) => {
-    DeliveryRequest.find()
-        .then(requests => res.status(200).json(requests))
-        .catch(err => res.status(500).json({ error: err.message }));
-};
-
-exports.getDeliveryRequestById = (req, res) => {
-    const { id } = req.params;
-
-    DeliveryRequest.findById(id)
-        .then(request => {
-            if (request) {
-                res.status(200).json(request);
+const DeliveryRequestController = {
+    create: async (req, res) => {
+        try {
+            const deliveryRequestData = req.body;
+            const result = await DeliveryRequest.create(deliveryRequestData);
+            res.status(201).json({ message: 'Delivery request created successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating delivery request', error });
+        }
+    },
+    getAll: async (req, res) => {
+        try {
+            const deliveryRequests = await DeliveryRequest.getAll();
+            res.status(200).json({ message: 'Delivery requests retrieved successfully', data: deliveryRequests });
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving delivery requests', error });
+        }
+    },
+    getById: async (req, res) => {
+        try {
+            const deliveryRequestId = req.params.id;
+            const deliveryRequest = await DeliveryRequest.getById(deliveryRequestId);
+            if (deliveryRequest) {
+                res.status(200).json({ message: 'Delivery request retrieved successfully', data: deliveryRequest });
             } else {
                 res.status(404).json({ message: 'Delivery request not found' });
             }
-        })
-        .catch(err => res.status(500).json({ error: err.message }));
-};
-
-exports.updateDeliveryRequest = (req, res) => {
-    const { id } = req.params;
-    const updateData = req.body;
-
-    DeliveryRequest.findByIdAndUpdate(id, updateData, { new: true })
-        .then(updatedRequest => {
-            if (updatedRequest) {
-                res.status(200).json(updatedRequest);
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving delivery request', error });
+        }
+    },
+    update: async (req, res) => {
+        try {
+            const deliveryRequestId = req.params.id;
+            const deliveryRequestData = req.body;
+            const result = await DeliveryRequest.update(deliveryRequestId, deliveryRequestData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Delivery request updated successfully', data: result });
             } else {
                 res.status(404).json({ message: 'Delivery request not found' });
             }
-        })
-        .catch(err => res.status(500).json({ error: err.message }));
-};
-
-exports.deleteDeliveryRequest = (req, res) => {
-    const { id } = req.params;
-
-    DeliveryRequest.findByIdAndDelete(id)
-        .then(deletedRequest => {
-            if (deletedRequest) {
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating delivery request', error });
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const deliveryRequestId = req.params.id;
+            const result = await DeliveryRequest.delete(deliveryRequestId);
+            if (result.deletedCount > 0) {
                 res.status(200).json({ message: 'Delivery request deleted successfully' });
             } else {
                 res.status(404).json({ message: 'Delivery request not found' });
             }
-        })
-        .catch(err => res.status(500).json({ error: err.message }));
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting delivery request', error });
+        }
+    }
 };
+
+module.exports = DeliveryRequestController;

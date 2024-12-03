@@ -1,60 +1,69 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
 
-exports.getAll = (callback) => {
-    db.query('SELECT * FROM Sale', (err, results) => {
-        if (err) {
-            return callback(err, null);
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
+
+const Sale = {
+    create: async (saleData) => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            const result = await salesCollection.insertOne(saleData);
+            return result;
+        } catch (err) {
+            console.error("Error creating sale:", err);
         }
-        callback(null, results);
-    });
+    },
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            return await salesCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all sales:", err);
+        }
+    },
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            return await salesCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving sale by ID:", err);
+        }
+    },
+    update: async (id, saleData) => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            const result = await salesCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: saleData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating sale:", err);
+        }
+    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            const result = await salesCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting sale:", err);
+        }
+    },
+    getByOwnerId: async (ownerId) => {
+        try {
+            const db = client.db("gp1");
+            const salesCollection = db.collection('Sale');
+            return await salesCollection.find({ ownerid: ownerId }).toArray();
+        } catch (err) {
+            console.error("Error retrieving sales by owner ID:", err);
+        }
+    }
 };
 
-exports.getById = (id, callback) => {
-    db.query('SELECT * FROM Sale WHERE id = ?', [id], (err, results) => {
-        if (err) {
-            return callback(err, null);
-        }
-        if (results.length === 0) {
-            return callback(null, null);
-        }
-        callback(null, results[0]);
-    });
-};
-
-exports.create = (saleData, callback) => {
-    const { itemId, quantity, price, ownerId } = saleData;
-    const query = 'INSERT INTO Sale (itemId, quantity, price, ownerId) VALUES (?, ?, ?, ?)';
-    db.query(query, [itemId, quantity, price, ownerId], (err, results) => {
-        if (err) {
-            return callback(err, null);
-        }
-        callback(null, { id: results.insertId, ...saleData });
-    });
-};
-
-exports.update = (id, saleData, callback) => {
-    const { itemId, quantity, price, ownerId } = saleData;
-    const query = 'UPDATE Sale SET itemId = ?, quantity = ?, price = ?, ownerId = ? WHERE id = ?';
-    db.query(query, [itemId, quantity, price, ownerId, id], (err, results) => {
-        if (err) {
-            return callback(err, null);
-        }
-        if (results.affectedRows === 0) {
-            return callback(null, null);
-        }
-        callback(null, { id, ...saleData });
-    });
-};
-
-exports.delete = (id, callback) => {
-    const query = 'DELETE FROM Sale WHERE id = ?';
-    db.query(query, [id], (err, results) => {
-        if (err) {
-            return callback(err);
-        }
-        if (results.affectedRows === 0) {
-            return callback(null);
-        }
-        callback(null);
-    });
-};
+module.exports = Sale;

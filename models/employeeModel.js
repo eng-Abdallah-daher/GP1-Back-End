@@ -1,31 +1,60 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
+
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
 
 const Employee = {
-    getAll: (callback) => {
-        db.query('SELECT * FROM Employee', callback);
+    create: async (employeeData) => {
+        try {
+            const db = client.db("gp1");
+            const employeesCollection = db.collection('employees');
+            const result = await employeesCollection.insertOne(employeeData);
+            return result;
+        } catch (err) {
+            console.error("Error creating employee:", err);
+        }
     },
-    getById: (id, callback) => {
-        db.query('SELECT * FROM Employee WHERE id = ?', [id], callback);
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const employeesCollection = db.collection('employees');
+            return await employeesCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all employees:", err);
+        }
     },
-    create: (employee, callback) => {
-        const { name, position } = employee;
-        db.query(
-            'INSERT INTO Employee (name, position) VALUES (?, ?)',
-            [name, position],
-            callback
-        );
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const employeesCollection = db.collection('employees');
+            return await employeesCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving employee by ID:", err);
+        }
     },
-    update: (id, employee, callback) => {
-        const { name, position } = employee;
-        db.query(
-            'UPDATE Employee SET name = ?, position = ? WHERE id = ?',
-            [name, position, id],
-            callback
-        );
+    update: async (id, employeeData) => {
+        try {
+            const db = client.db("gp1");
+            const employeesCollection = db.collection('employees');
+            const result = await employeesCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: employeeData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating employee:", err);
+        }
     },
-    delete: (id, callback) => {
-        db.query('DELETE FROM Employee WHERE id = ?', [id], callback);
-    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const employeesCollection = db.collection('employees');
+            const result = await employeesCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting employee:", err);
+        }
+    }
 };
 
 module.exports = Employee;

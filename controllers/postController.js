@@ -1,58 +1,83 @@
 const Post = require('../models/postModel');
 
-exports.getAll = (req, res) => {
-    Post.getAll((err, posts) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error retrieving posts' });
+const PostController = {
+    create: async (req, res) => {
+        try {
+            const postData = req.body;
+            const result = await Post.create(postData);
+            res.status(201).json({ message: 'Post created successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating post', error });
         }
-        res.status(200).json(posts);
-    });
+    },
+    getAll: async (req, res) => {
+        try {
+            const posts = await Post.getAll();
+            res.status(200).json({ message: 'Posts retrieved successfully', data: posts });
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving posts', error });
+        }
+    },
+    getById: async (req, res) => {
+        try {
+            const postId = req.params.id;
+            const post = await Post.getById(postId);
+            if (post) {
+                res.status(200).json({ message: 'Post retrieved successfully', data: post });
+            } else {
+                res.status(404).json({ message: 'Post not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving post', error });
+        }
+    },
+    update: async (req, res) => {
+        try {
+            const postId = req.params.id;
+            const postData = req.body;
+            const result = await Post.update(postId, postData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Post updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'Post not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating post', error });
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const postId = req.params.id;
+            const result = await Post.delete(postId);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: 'Post deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Post not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting post', error });
+        }
+    },
+    addLike: async (req, res) => {
+        try {
+            const postId = req.params.id;
+            const userId = req.body.userId; // Assumes userId is passed in the body
+            const result = await Post.addLike(postId, userId);
+            res.status(200).json({ message: 'Like added successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error adding like', error });
+        }
+    },
+    addComment: async (req, res) => {
+        try {
+            const postId = req.params.id;
+            const commentData = req.body; // Assumes commentData is passed in the body
+            const result = await Post.addComment(postId, commentData);
+            res.status(200).json({ message: 'Comment added successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error adding comment', error });
+        }
+    }
 };
 
-exports.getById = (req, res) => {
-    const postId = req.params.id;
-    Post.getById(postId, (err, post) => {
-        if (err || !post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-        res.status(200).json(post);
-    });
-};
-
-exports.create = (req, res) => {
-    const { ownerId, description, postImage } = req.body;
-    const postData = { ownerId, description, postImage };
-    Post.create(postData, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error creating post' });
-        }
-        res.status(201).json({ message: 'Post created successfully', postId: result.insertId });
-    });
-};
-
-exports.update = (req, res) => {
-    const postId = req.params.id;
-    const { description, postImage } = req.body;
-    Post.update(postId, { description, postImage }, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error updating post' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-        res.status(200).json({ message: 'Post updated successfully' });
-    });
-};
-
-exports.delete = (req, res) => {
-    const postId = req.params.id;
-    Post.delete(postId, (err, result) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error deleting post' });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-        res.status(200).json({ message: 'Post deleted successfully' });
-    });
-};
+module.exports = PostController;

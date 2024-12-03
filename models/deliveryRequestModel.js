@@ -1,31 +1,60 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
+
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
 
 const DeliveryRequest = {
-    getAll: (callback) => {
-        db.query('SELECT * FROM DeliveryRequest', callback);
+    create: async (deliveryRequestData) => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            const result = await deliveryRequestsCollection.insertOne(deliveryRequestData);
+            return result;
+        } catch (err) {
+            console.error("Error creating delivery request:", err);
+        }
     },
-    getById: (id, callback) => {
-        db.query('SELECT * FROM DeliveryRequest WHERE id = ?', [id], callback);
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            return await deliveryRequestsCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all delivery requests:", err);
+        }
     },
-    create: (deliveryRequest, callback) => {
-        const { userId, ownerId, phone, address, instructions, status } = deliveryRequest;
-        db.query(
-            'INSERT INTO DeliveryRequest (userId, ownerId, phone, address, instructions, status) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, ownerId, phone, address, instructions, status],
-            callback
-        );
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            return await deliveryRequestsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving delivery request by ID:", err);
+        }
     },
-    update: (id, deliveryRequest, callback) => {
-        const { userId, ownerId, phone, address, instructions, status } = deliveryRequest;
-        db.query(
-            'UPDATE DeliveryRequest SET userId = ?, ownerId = ?, phone = ?, address = ?, instructions = ?, status = ? WHERE id = ?',
-            [userId, ownerId, phone, address, instructions, status, id],
-            callback
-        );
+    update: async (id, deliveryRequestData) => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            const result = await deliveryRequestsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: deliveryRequestData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating delivery request:", err);
+        }
     },
-    delete: (id, callback) => {
-        db.query('DELETE FROM DeliveryRequest WHERE id = ?', [id], callback);
-    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            const result = await deliveryRequestsCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting delivery request:", err);
+        }
+    }
 };
 
 module.exports = DeliveryRequest;

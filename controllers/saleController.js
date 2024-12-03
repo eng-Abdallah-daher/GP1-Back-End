@@ -1,66 +1,76 @@
 const Sale = require('../models/saleModel');
 
-exports.getAll = (req, res) => {
-    Sale.getAll((err, sales) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to retrieve sales' });
+const SaleController = {
+    create: async (req, res) => {
+        try {
+            const saleData = req.body;
+            const result = await Sale.create(saleData);
+            res.status(201).json({ message: 'Sale created successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating sale', error });
         }
-        res.status(200).json(sales);
-    });
+    },
+    getAll: async (req, res) => {
+        try {
+            const sales = await Sale.getAll();
+            res.status(200).json({ message: 'Sales retrieved successfully', data: sales });
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving sales', error });
+        }
+    },
+    getById: async (req, res) => {
+        try {
+            const saleId = req.params.id;
+            const sale = await Sale.getById(saleId);
+            if (sale) {
+                res.status(200).json({ message: 'Sale retrieved successfully', data: sale });
+            } else {
+                res.status(404).json({ message: 'Sale not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving sale', error });
+        }
+    },
+    update: async (req, res) => {
+        try {
+            const saleId = req.params.id;
+            const saleData = req.body;
+            const result = await Sale.update(saleId, saleData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Sale updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'Sale not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating sale', error });
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const saleId = req.params.id;
+            const result = await Sale.delete(saleId);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: 'Sale deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Sale not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting sale', error });
+        }
+    },
+    getByOwnerId: async (req, res) => {
+        try {
+            const ownerId = req.params.ownerId;
+            const sales = await Sale.getByOwnerId(ownerId);
+            if (sales.length > 0) {
+                res.status(200).json({ message: 'Sales retrieved successfully', data: sales });
+            } else {
+                res.status(404).json({ message: 'No sales found for this owner' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving sales', error });
+        }
+    }
 };
 
-exports.getById = (req, res) => {
-    const { id } = req.params;
-    Sale.getById(id, (err, sale) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to retrieve sale' });
-        }
-        if (!sale) {
-            return res.status(404).json({ error: 'Sale not found' });
-        }
-        res.status(200).json(sale);
-    });
-};
-
-exports.create = (req, res) => {
-    const { itemId, quantity, price, ownerId } = req.body;
-    const saleData = {
-        itemId,
-        quantity,
-        price,
-        ownerId
-    };
-    Sale.create(saleData, (err, newSale) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to create sale' });
-        }
-        res.status(201).json({ message: 'Sale created successfully', sale: newSale });
-    });
-};
-
-exports.update = (req, res) => {
-    const { id } = req.params;
-    const { itemId, quantity, price, ownerId } = req.body;
-    const saleData = {
-        itemId,
-        quantity,
-        price,
-        ownerId
-    };
-    Sale.update(id, saleData, (err, updatedSale) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to update sale' });
-        }
-        res.status(200).json({ message: 'Sale updated successfully', sale: updatedSale });
-    });
-};
-
-exports.delete = (req, res) => {
-    const { id } = req.params;
-    Sale.delete(id, (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to delete sale' });
-        }
-        res.status(200).json({ message: 'Sale deleted successfully' });
-    });
-};
+module.exports = SaleController;

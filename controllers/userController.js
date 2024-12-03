@@ -1,59 +1,103 @@
-const userModel = require('../models/userModel');
+const User = require('../models/userModel');
 
-const getAllUsers = (req, res) => {
-    userModel.getAllUsers((err, users) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to fetch users' });
-        } else {
-            res.status(200).json(users);
+const UserController = {
+    create: async (req, res) => {
+        try {
+            const userData = req.body;
+            const result = await User.create(userData);
+            res.status(201).json({ message: 'User created successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating user', error });
         }
-    });
-};
-
-const getUserById = (req, res) => {
-    userModel.getUserById(req.params.id, (err, user) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to fetch user' });
-        } else {
-            res.status(200).json(user);
+    },
+    getAll: async (req, res) => {
+        try {
+            const users = await User.getAll();
+            res.status(200).json({ message: 'Users retrieved successfully', data: users });
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving users', error });
         }
-    });
-};
-
-const addUser = (req, res) => {
-    userModel.addUser(req.body, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to add user' });
-        } else {
-            res.status(201).json({ message: 'User added successfully', userId: result.insertId });
+    },
+    getById: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const user = await User.getById(userId);
+            if (user) {
+                res.status(200).json({ message: 'User retrieved successfully', data: user });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving user', error });
         }
-    });
-};
-
-const updateUser = (req, res) => {
-    userModel.updateUser(req.params.id, req.body, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to update user' });
-        } else {
-            res.status(200).json({ message: 'User updated successfully' });
+    },
+    update: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const userData = req.body;
+            const result = await User.update(userId, userData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'User updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating user', error });
         }
-    });
-};
-
-const deleteUser = (req, res) => {
-    userModel.deleteUser(req.params.id, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to delete user' });
-        } else {
-            res.status(200).json({ message: 'User deleted successfully' });
+    },
+    updatePassword: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const { newPassword } = req.body;
+            const result = await User.updatePassword(userId, newPassword);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Password updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating password', error });
         }
-    });
+    },
+    delete: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const result = await User.delete(userId);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: 'User deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting user', error });
+        }
+    },
+    getByEmail: async (req, res) => {
+        try {
+            const email = req.params.email;
+            const user = await User.getByEmail(email);
+            if (user) {
+                res.status(200).json({ message: 'User retrieved successfully', data: user });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving user', error });
+        }
+    },
+    authenticate: async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            const user = await User.authenticate(email, password);
+            if (user) {
+                res.status(200).json({ message: 'Authentication successful', data: user });
+            } else {
+                res.status(401).json({ message: 'Invalid email or password' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error authenticating user', error });
+        }
+    }
 };
 
-module.exports = {
-    getAllUsers,
-    getUserById,
-    addUser,
-    updateUser,
-    deleteUser,
-};
+module.exports = UserController;

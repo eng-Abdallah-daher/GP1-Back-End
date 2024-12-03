@@ -1,12 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const postRoutes = require('./routes/postRoutes');
-const likeRoutes = require('./routes/likeRoutes');
+const likeRoutes = require('./routes/towingserviceRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const maintenanceRequestRoutes = require('./routes/maintenanceRequestRoutes');
 const itemRoutes = require('./routes/itemRoutes');
@@ -16,6 +17,7 @@ const offerRoutes = require('./routes/offerRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const deliveryRequestRoutes = require('./routes/deliveryRequestRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const towingserviceRoutes= require('./routes/towingserviceRoutes');
 
 const app = express();
 const port = 3000;
@@ -38,11 +40,22 @@ app.use('/api/offers', offerRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/deliveryRequests', deliveryRequestRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/towingservices',towingserviceRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is running...');
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+async function startServer() {
+    try {
+        await connectDB();
+        app.listen(port, () => {
+            console.log(`Server is running on http://localhost:${port}`);
+        });
+    } catch (err) {
+        console.error('Failed to start the server:', err);
+        process.exit(1);
+    }
+}
+
+startServer();

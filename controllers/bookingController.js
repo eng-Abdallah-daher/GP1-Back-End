@@ -1,57 +1,86 @@
 const Booking = require('../models/bookingModel');
 
-exports.getAllBookings = async (req, res) => {
+const createBooking = async (req, res) => {
     try {
-        const bookings = await Booking.findAll();
+        const bookingData = req.body;
+        const result = await Booking.create(bookingData);
+        res.status(201).json({
+            message: 'Booking created successfully',
+            booking: result.ops[0]
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating booking', error });
+    }
+};
+
+const getAllBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.getAll();
         res.status(200).json(bookings);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve bookings' });
+        res.status(500).json({ message: 'Error fetching bookings', error });
     }
 };
 
-exports.getBookingById = async (req, res) => {
+const getBookingById = async (req, res) => {
     try {
-        const booking = await Booking.findByPk(req.params.id);
+        const { id } = req.params;
+        const booking = await Booking.getById(id);
         if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
+            return res.status(404).json({ message: 'Booking not found' });
         }
         res.status(200).json(booking);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve booking' });
+        res.status(500).json({ message: 'Error fetching booking', error });
     }
 };
 
-exports.createBooking = async (req, res) => {
+const updateBooking = async (req, res) => {
     try {
-        const booking = await Booking.create(req.body);
-        res.status(201).json(booking);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to create booking' });
-    }
-};
-
-exports.updateBooking = async (req, res) => {
-    try {
-        const booking = await Booking.findByPk(req.params.id);
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
+        const { id } = req.params;
+        const bookingData = req.body;
+        const result = await Booking.update(id, bookingData);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Booking not found' });
         }
-        await booking.update(req.body);
-        res.status(200).json(booking);
+        res.status(200).json({ message: 'Booking updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update booking' });
+        res.status(500).json({ message: 'Error updating booking', error });
     }
 };
 
-exports.deleteBooking = async (req, res) => {
+const updateBookingStatus = async (req, res) => {
     try {
-        const booking = await Booking.findByPk(req.params.id);
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
+        const { id } = req.params;
+        const { status } = req.body;
+        const result = await Booking.updateStatus(id, status);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Booking not found' });
         }
-        await booking.destroy();
+        res.status(200).json({ message: 'Booking status updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating booking status', error });
+    }
+};
+
+const deleteBooking = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await Booking.delete(id);
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
         res.status(200).json({ message: 'Booking deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete booking' });
+        res.status(500).json({ message: 'Error deleting booking', error });
     }
+};
+
+module.exports = {
+    createBooking,
+    getAllBookings,
+    getBookingById,
+    updateBooking,
+    updateBookingStatus,
+    deleteBooking
 };

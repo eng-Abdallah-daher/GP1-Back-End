@@ -1,31 +1,73 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
+
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
 
 const Booking = {
-    getAll: (callback) => {
-        db.query('SELECT * FROM Booking', callback);
+    create: async (bookingData) => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            const result = await bookingsCollection.insertOne(bookingData);
+            return result;
+        } catch (err) {
+            console.error("Error creating booking:", err);
+        }
     },
-    getById: (id, callback) => {
-        db.query('SELECT * FROM Booking WHERE id = ?', [id], callback);
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            return await bookingsCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving bookings:", err);
+        }
     },
-    create: (booking, callback) => {
-        const { userId, ownerId, customerName, appointmentDate, status } = booking;
-        db.query(
-            'INSERT INTO Booking (userId, ownerId, customerName, appointmentDate, status) VALUES (?, ?, ?, ?, ?)',
-            [userId, ownerId, customerName, appointmentDate, status],
-            callback
-        );
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            return await bookingsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving booking by ID:", err);
+        }
     },
-    update: (id, booking, callback) => {
-        const { userId, ownerId, customerName, appointmentDate, status } = booking;
-        db.query(
-            'UPDATE Booking SET userId = ?, ownerId = ?, customerName = ?, appointmentDate = ?, status = ? WHERE id = ?',
-            [userId, ownerId, customerName, appointmentDate, status, id],
-            callback
-        );
+    update: async (id, bookingData) => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            const result = await bookingsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: bookingData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating booking:", err);
+        }
     },
-    delete: (id, callback) => {
-        db.query('DELETE FROM Booking WHERE id = ?', [id], callback);
+    updateStatus: async (id, status) => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            const result = await bookingsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { status: status } }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating booking status:", err);
+        }
     },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const bookingsCollection = db.collection('bookings');
+            const result = await bookingsCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting booking:", err);
+        }
+    }
 };
 
 module.exports = Booking;

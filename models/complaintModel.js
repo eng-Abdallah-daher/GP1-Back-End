@@ -1,36 +1,61 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
 
-exports.getAll = (callback) => {
-    db.query('SELECT * FROM Complaint', (err, results) => {
-        callback(err, results);
-    });
+
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
+
+const Complaint = {
+    create: async (complaintData) => {
+        try {
+            const db = client.db("gp1");
+            const complaintsCollection = db.collection('complaints');
+            const result = await complaintsCollection.insertOne(complaintData);
+            return result;
+        } catch (err) {
+            console.error("Error creating complaint:", err);
+        }
+    },
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const complaintsCollection = db.collection('complaints');
+            return await complaintsCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all complaints:", err);
+        }
+    },
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const complaintsCollection = db.collection('complaints');
+            return await complaintsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving complaint by ID:", err);
+        }
+    },
+    update: async (id, complaintData) => {
+        try {
+            const db = client.db("gp1");
+            const complaintsCollection = db.collection('complaints');
+            const result = await complaintsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: complaintData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating complaint:", err);
+        }
+    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const complaintsCollection = db.collection('complaints');
+            const result = await complaintsCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting complaint:", err);
+        }
+    }
 };
 
-exports.getById = (id, callback) => {
-    db.query('SELECT * FROM Complaint WHERE id = ?', [id], (err, results) => {
-        callback(err, results);
-    });
-};
-
-exports.create = (data, callback) => {
-    const { description, userName, ownerId, rate } = data;
-    const query = 'INSERT INTO Complaint (description, userName, ownerId, rate) VALUES (?, ?, ?, ?)';
-    db.query(query, [description, userName, ownerId, rate], (err, result) => {
-        callback(err, result);
-    });
-};
-
-exports.update = (id, data, callback) => {
-    const { description, userName, ownerId, rate } = data;
-    const query = 'UPDATE Complaint SET description = ?, userName = ?, ownerId = ?, rate = ? WHERE id = ?';
-    db.query(query, [description, userName, ownerId, rate, id], (err, result) => {
-        callback(err, result);
-    });
-};
-
-exports.delete = (id, callback) => {
-    const query = 'DELETE FROM Complaint WHERE id = ?';
-    db.query(query, [id], (err, result) => {
-        callback(err, result);
-    });
-};
+module.exports = Complaint;

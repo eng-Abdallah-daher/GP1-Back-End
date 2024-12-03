@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const deliveryRequestController = require('../controllers/deliveryRequestController');
+const DeliveryRequestController = require('../controllers/deliveryRequestController');
 
-router.post('/', deliveryRequestController.createDeliveryRequest);
-router.get('/', deliveryRequestController.getAllDeliveryRequests);
-router.get('/:id', deliveryRequestController.getDeliveryRequestById);
-router.put('/:id', deliveryRequestController.updateDeliveryRequest);
-router.delete('/:id', deliveryRequestController.deleteDeliveryRequest);
+router.post('/', DeliveryRequestController.create);
+router.get('/', DeliveryRequestController.getAll);
+router.get('/:id', DeliveryRequestController.getById);
+router.put('/:id', DeliveryRequestController.update);
+router.delete('/:id', DeliveryRequestController.delete);
 
 module.exports = router;

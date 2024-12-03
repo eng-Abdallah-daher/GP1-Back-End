@@ -1,70 +1,60 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
 
-exports.getAllItems = () => {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Item', (err, results) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(results);
-            }
-        });
-    });
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
+
+const Item = {
+    create: async (itemData) => {
+        try {
+            const db = client.db("gp1");
+            const itemsCollection = db.collection('items');
+            const result = await itemsCollection.insertOne(itemData);
+            return result;
+        } catch (err) {
+            console.error("Error creating item:", err);
+        }
+    },
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const itemsCollection = db.collection('items');
+            return await itemsCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all items:", err);
+        }
+    },
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const itemsCollection = db.collection('items');
+            return await itemsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving item by ID:", err);
+        }
+    },
+    update: async (id, itemData) => {
+        try {
+            const db = client.db("gp1");
+            const itemsCollection = db.collection('items');
+            const result = await itemsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: itemData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating item:", err);
+        }
+    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const itemsCollection = db.collection('items');
+            const result = await itemsCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting item:", err);
+        }
+    }
 };
 
-exports.getItemById = (id) => {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM Item WHERE id = ?', [id], (err, results) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(results[0]);
-            }
-        });
-    });
-};
-
-exports.createItem = (ownerId, name, price, description, availableQuantity) => {
-    return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO Item (ownerId, name, price, description, availableQuantity) VALUES (?, ?, ?, ?, ?)';
-        db.query(query, [ownerId, name, price, description, availableQuantity], (err, results) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({
-                    id: results.insertId,
-                    ownerId,
-                    name,
-                    price,
-                    description,
-                    availableQuantity,
-                });
-            }
-        });
-    });
-};
-
-exports.updateItem = (id, name, price, description, availableQuantity) => {
-    return new Promise((resolve, reject) => {
-        const query = 'UPDATE Item SET name = ?, price = ?, description = ?, availableQuantity = ? WHERE id = ?';
-        db.query(query, [name, price, description, availableQuantity, id], (err, results) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(results.affectedRows > 0 ? { id, name, price, description, availableQuantity } : null);
-            }
-        });
-    });
-};
-
-exports.deleteItem = (id) => {
-    return new Promise((resolve, reject) => {
-        db.query('DELETE FROM Item WHERE id = ?', [id], (err, results) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(results);
-            }
-        });
-    });
-};
+module.exports = Item;

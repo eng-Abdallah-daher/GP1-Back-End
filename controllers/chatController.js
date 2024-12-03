@@ -1,75 +1,93 @@
 const Chat = require('../models/chatModel');
 
+const createChat = async (req, res) => {
+    try {
+        const chatData = req.body;
+        const result = await Chat.create(chatData);
+        res.status(201).json({
+            message: 'Chat created successfully',
+            chat: result.ops[0]
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating chat', error });
+    }
+};
 
 const getAllChats = async (req, res) => {
     try {
         const chats = await Chat.getAll();
-         
         res.status(200).json(chats);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Failed to retrieve chats' ,});
+        res.status(500).json({ message: 'Error fetching chats', error });
     }
 };
 
 const getChatById = async (req, res) => {
     try {
-        const chat = await Chat.getById(req.params.id);
-        
-        if (!chat) return res.status(404).json({ error: 'Chat not found' });
-       
+        const { id } = req.params;
+        const chat = await Chat.getById(id);
+        if (!chat) {
+            return res.status(404).json({ message: 'Chat not found' });
+        }
         res.status(200).json(chat);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve chat' });
+        res.status(500).json({ message: 'Error fetching chat', error });
     }
 };
 
-const createChat = async (req, res) => {
+const updateChat = async (req, res) => {
     try {
-        const { user1Id, user2Id} = req.body;
-    const m=req.body['lastMessage']
-        const chat = await Chat.create({ user1Id, user2Id,m});
-        res.status(201).json(chat);
+        const { id } = req.params;
+        const chatData = req.body;
+        const result = await Chat.update(id, chatData);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Chat not found' });
+        }
+        res.status(200).json({ message: 'Chat updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create chat' });
-    }
-};
-
-const deleteChat = async (req, res) => {
-    try {
-        const chat = await Chat.findByPk(req.params.id);
-        if (!chat) return res.status(404).json({ error: 'Chat not found' });
-        await chat.destroy();
-        res.status(200).json({ message: 'Chat deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to delete chat' });
-    }
-};
-
-const getMessagesByChatId = async (req, res) => {
-    try {
-        const messages = await Message.findAll({ where: { chatId: req.params.chatId } });
-        res.status(200).json(messages);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to retrieve messages' });
+        res.status(500).json({ message: 'Error updating chat', error });
     }
 };
 
 const addMessageToChat = async (req, res) => {
     try {
-        const { chatId, senderId, content } = req.body;
-        const message = await Message.create({ chatId, senderId, content });
-        res.status(201).json(message);
+        const { chatId, messageData } = req.body;
+        const result = await Chat.addMessage(chatId, messageData);
+        res.status(200).json({ message: 'Message added to chat successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to add message' });
+        res.status(500).json({ message: 'Error adding message to chat', error });
+    }
+};
+
+const removeMessageFromChat = async (req, res) => {
+    try {
+        const { chatId, messageId } = req.body;
+        const result = await Chat.removeMessage(chatId, messageId);
+        res.status(200).json({ message: 'Message removed from chat successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error removing message from chat', error });
+    }
+};
+
+const deleteChat = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await Chat.delete(id);
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Chat not found' });
+        }
+        res.status(200).json({ message: 'Chat deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting chat', error });
     }
 };
 
 module.exports = {
+    createChat,
     getAllChats,
     getChatById,
-    createChat,
-    deleteChat,
-    getMessagesByChatId,
+    updateChat,
     addMessageToChat,
+    removeMessageFromChat,
+    deleteChat
 };

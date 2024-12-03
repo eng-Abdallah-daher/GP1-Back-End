@@ -1,12 +1,14 @@
 const express = require('express');
-const userController = require('../controllers/userController');
-
 const router = express.Router();
+const UserController = require('../controllers/userController');
 
-router.get('/', userController.getAllUsers);
-router.get('/:id', userController.getUserById);
-router.post('/', userController.addUser);
-router.put('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+router.post('/', UserController.create);
+router.get('/', UserController.getAll);
+router.get('/:id', UserController.getById);
+router.put('/:id', UserController.update);
+router.put('/:id/password', UserController.updatePassword); // Route for updating password
+router.delete('/:id', UserController.delete);
+router.get('/email/:email', UserController.getByEmail);
+router.post('/authenticate', UserController.authenticate);
 
 module.exports = router;

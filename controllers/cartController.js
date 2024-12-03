@@ -1,61 +1,93 @@
 const Cart = require('../models/cartModel');
 
+const createCart = async (req, res) => {
+    try {
+        const cartData = req.body;
+        const result = await Cart.create(cartData);
+        res.status(201).json({
+            message: 'Cart created successfully',
+            cart: result.ops[0]
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating cart', error });
+    }
+};
 
-exports.getAllCarts = async (req, res) => {
+const getAllCarts = async (req, res) => {
     try {
         const carts = await Cart.getAll();
         res.status(200).json(carts);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error fetching carts', error });
     }
 };
 
-exports.getCartById = async (req, res) => {
+const getCartById = async (req, res) => {
     try {
-        const cart = await Cart.getById(req.params.id);
-        if (!cart) return res.status(404).json({ message: 'Cart not found' });
+        const { id } = req.params;
+        const cart = await Cart.getById(id);
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
         res.status(200).json(cart);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error fetching cart', error });
     }
 };
 
-exports.createCart = async (req, res) => {
+const updateCart = async (req, res) => {
     try {
-        const newCart = await Cart.create(req.body.userId);
-        res.status(201).json(newCart);
+        const { id } = req.params;
+        const cartData = req.body;
+        const result = await Cart.update(id, cartData);
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        res.status(200).json({ message: 'Cart updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error updating cart', error });
     }
 };
 
-exports.addItemToCart = async (req, res) => {
+const addItemToCart = async (req, res) => {
     try {
-        const { cartId, itemId, quantity } = req.body;
-        const addedItem = await CartItem.add(cartId, itemId, quantity);
-        res.status(201).json(addedItem);
+        const { cartId, itemData } = req.body;
+        const result = await Cart.addItem(cartId, itemData);
+        res.status(200).json({ message: 'Item added to cart successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error adding item to cart', error });
     }
 };
 
-exports.removeItemFromCart = async (req, res) => {
+const removeItemFromCart = async (req, res) => {
     try {
         const { cartId, itemId } = req.body;
-        const removedItem = await CartItem.remove(cartId, itemId);
-        if (!removedItem) return res.status(404).json({ message: 'Item not found in cart' });
-        res.status(200).json({ message: 'Item removed from cart' });
+        const result = await Cart.removeItem(cartId, itemId);
+        res.status(200).json({ message: 'Item removed from cart successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error removing item from cart', error });
     }
 };
 
-exports.deleteCart = async (req, res) => {
+const deleteCart = async (req, res) => {
     try {
-        const deletedCart = await Cart.delete(req.params.id);
-        if (!deletedCart) return res.status(404).json({ message: 'Cart not found' });
-        res.status(200).json({ message: 'Cart deleted' });
+        const { id } = req.params;
+        const result = await Cart.delete(id);
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        res.status(200).json({ message: 'Cart deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ message: 'Error deleting cart', error });
     }
+};
+
+module.exports = {
+    createCart,
+    getAllCarts,
+    getCartById,
+    updateCart,
+    addItemToCart,
+    removeItemFromCart,
+    deleteCart
 };

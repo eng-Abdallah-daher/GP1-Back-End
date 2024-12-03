@@ -1,65 +1,60 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
 
-class MaintenanceRequest {
-    constructor(userId, ownerId, time) {
-        this.userId = userId;
-        this.ownerId = ownerId;
-        this.time = time;
-    }
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
 
-    static getAll(callback) {
-        db.query('SELECT * FROM MaintenanceRequest', (err, results) => {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, results);
-            }
-        });
+const MaintenanceRequest = {
+    create: async (requestData) => {
+        try {
+            const db = client.db("gp1");
+            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const result = await maintenanceRequestsCollection.insertOne(requestData);
+            return result;
+        } catch (err) {
+            console.error("Error creating maintenance request:", err);
+        }
+    },
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            return await maintenanceRequestsCollection.find().toArray();
+        } catch (err) {
+            console.error("Error retrieving all maintenance requests:", err);
+        }
+    },
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            return await maintenanceRequestsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error("Error retrieving maintenance request by ID:", err);
+        }
+    },
+    update: async (id, requestData) => {
+        try {
+            const db = client.db("gp1");
+            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const result = await maintenanceRequestsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: requestData }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating maintenance request:", err);
+        }
+    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const result = await maintenanceRequestsCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error("Error deleting maintenance request:", err);
+        }
     }
-
-    static getById(id, callback) {
-        db.query('SELECT * FROM MaintenanceRequest WHERE id = ?', [id], (err, results) => {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, results[0]);
-            }
-        });
-    }
-
-    static add(maintenanceRequest, callback) {
-        db.query('INSERT INTO MaintenanceRequest (userId, ownerId, time) VALUES (?, ?, ?)', 
-        [maintenanceRequest.userId, maintenanceRequest.ownerId, maintenanceRequest.time], 
-        (err, results) => {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, results);
-            }
-        });
-    }
-
-    static update(id, maintenanceRequest, callback) {
-        db.query('UPDATE MaintenanceRequest SET userId = ?, ownerId = ?, time = ? WHERE id = ?',
-        [maintenanceRequest.userId, maintenanceRequest.ownerId, maintenanceRequest.time, id], 
-        (err, results) => {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, results);
-            }
-        });
-    }
-
-    static delete(id, callback) {
-        db.query('DELETE FROM MaintenanceRequest WHERE id = ?', [id], (err, results) => {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, results);
-            }
-        });
-    }
-}
+};
 
 module.exports = MaintenanceRequest;

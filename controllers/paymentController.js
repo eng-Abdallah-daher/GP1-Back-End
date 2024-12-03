@@ -1,59 +1,63 @@
-const paymentModel = require('../models/paymentModel');
+const Payment = require('../models/paymentModel');
 
-const getAllPayments = (req, res) => {
-    paymentModel.getAllPayments((err, payments) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to fetch payments' });
-        } else {
-            res.status(200).json(payments);
+const PaymentController = {
+    create: async (req, res) => {
+        try {
+            const paymentData = req.body;
+            const result = await Payment.create(paymentData);
+            res.status(201).json({ message: 'Payment created successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error creating payment', error });
         }
-    });
-};
-
-const getPaymentById = (req, res) => {
-    paymentModel.getPaymentById(req.params.id, (err, payment) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to fetch payment' });
-        } else {
-            res.status(200).json(payment);
+    },
+    getAll: async (req, res) => {
+        try {
+            const payments = await Payment.getAll();
+            res.status(200).json({ message: 'Payments retrieved successfully', data: payments });
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving payments', error });
         }
-    });
-};
-
-const addPayment = (req, res) => {
-    paymentModel.addPayment(req.body, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to add payment' });
-        } else {
-            res.status(201).json({ message: 'Payment added successfully', paymentId: result.insertId });
+    },
+    getById: async (req, res) => {
+        try {
+            const paymentId = req.params.id;
+            const payment = await Payment.getById(paymentId);
+            if (payment) {
+                res.status(200).json({ message: 'Payment retrieved successfully', data: payment });
+            } else {
+                res.status(404).json({ message: 'Payment not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error retrieving payment', error });
         }
-    });
-};
-
-const updatePayment = (req, res) => {
-    paymentModel.updatePayment(req.params.id, req.body, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to update payment' });
-        } else {
-            res.status(200).json({ message: 'Payment updated successfully' });
+    },
+    update: async (req, res) => {
+        try {
+            const paymentId = req.params.id;
+            const paymentData = req.body;
+            const result = await Payment.update(paymentId, paymentData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Payment updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'Payment not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating payment', error });
         }
-    });
-};
-
-const deletePayment = (req, res) => {
-    paymentModel.deletePayment(req.params.id, (err, result) => {
-        if (err) {
-            res.status(500).json({ error: 'Failed to delete payment' });
-        } else {
-            res.status(200).json({ message: 'Payment deleted successfully' });
+    },
+    delete: async (req, res) => {
+        try {
+            const paymentId = req.params.id;
+            const result = await Payment.delete(paymentId);
+            if (result.deletedCount > 0) {
+                res.status(200).json({ message: 'Payment deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Payment not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error deleting payment', error });
         }
-    });
+    }
 };
 
-module.exports = {
-    getAllPayments,
-    getPaymentById,
-    addPayment,
-    updatePayment,
-    deletePayment,
-};
+module.exports = PaymentController;

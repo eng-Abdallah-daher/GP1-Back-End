@@ -1,68 +1,89 @@
-const db = require('../config/db');
+const { MongoClient, ObjectId } = require('mongodb');
 
-const getAllUsers = (callback) => {
-    db.query('SELECT * FROM Users', callback);
+const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
+const client = new MongoClient(uri);
+
+const User = {
+    create: async (userData) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            const result = await usersCollection.insertOne(userData);
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    getAll: async () => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            return await usersCollection.find().toArray();
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    getById: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            return await usersCollection.findOne({ _id: new ObjectId(id) });
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    update: async (id, userData) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            const updateData = {
+                username: userData.username,
+                phone: userData.phone
+            };
+            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    updatePassword: async (id, newPassword) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { password: newPassword } });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    delete: async (id) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    getByEmail: async (email) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            return await usersCollection.findOne({ email: email });
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    authenticate: async (email, password) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            return await usersCollection.findOne({ email: email, password: password });
+        } catch (err) {
+            console.error(err);
+        }
+    }
 };
 
-const getUserById = (id, callback) => {
-    db.query('SELECT * FROM Users WHERE id = ?', [id], callback);
-};
-
-const addUser = (userData, callback) => {
-   try{
- const query = `
-        INSERT INTO Users (name, phone, email, password, carPlateNumber, role, profileImage, description, location, isServiceActive)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    const values = [
-        userData.name,
-        userData.phone,
-        userData.email,
-        userData.password,
-        userData.carPlateNumber,
-        userData.role,
-        userData.profileImage || null,
-        userData.description || null,
-        userData.location || null,
-        userData.isServiceActive ? 1 : 0,
-    ];
-    db.query(query, values, callback);
-   }catch(e){
-
-     console.log(e);
-     callback(e, null);
-   }
-};
-
-const updateUser = (id, userData, callback) => {
-    const query = `
-        UPDATE Users SET name = ?, phone = ?, email = ?, password = ?, carPlateNumber = ?, role = ?, profileImage = ?, description = ?, location = ?, isServiceActive = ?
-        WHERE id = ?
-    `;
-    const values = [
-        userData.name,
-        userData.phone,
-        userData.email,
-        userData.password,
-        userData.carPlateNumber,
-        userData.role,
-        userData.profileImage || null,
-        userData.description || null,
-        userData.location || null,
-        userData.isServiceActive ? 1 : 0,
-        id,
-    ];
-    db.query(query, values, callback);
-};
-
-const deleteUser = (id, callback) => {
-    db.query('DELETE FROM Users WHERE id = ?', [id], callback);
-};
-
-module.exports = {
-    getAllUsers,
-    getUserById,
-    addUser,
-    updateUser,
-    deleteUser,
-};
+module.exports = User;
