@@ -29,7 +29,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/likes', likeRoutes);
+// app.use('/api/likes', likeRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/maintenanceRequests', maintenanceRequestRoutes);
 app.use('/api/items', itemRoutes);
