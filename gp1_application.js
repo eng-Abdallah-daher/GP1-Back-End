@@ -16,7 +16,7 @@ const offerRoutes = require('./routes/offerRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const deliveryRequestRoutes = require('./routes/deliveryRequestRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-const towingserviceRoutes= require('./routes/towingserviceRoutes');
+// const towingserviceRoutes= require('./routes/towingserviceRoutes');
 
 const app = express();
 const port = 3000;
@@ -39,7 +39,7 @@ app.use('/api/offers', offerRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/deliveryRequests', deliveryRequestRoutes);
 app.use('/api/chats', chatRoutes);
-app.use('/api/towingservices',towingserviceRoutes);
+// app.use('/api/towingservices',towingserviceRoutes);
 
 app.get('/', (req, res) => {
     res.send('Server is running...');
