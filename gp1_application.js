@@ -7,7 +7,6 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const postRoutes = require('./routes/postRoutes');
-const likeRoutes = require('./routes/towingserviceRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const maintenanceRequestRoutes = require('./routes/maintenanceRequestRoutes');
 const itemRoutes = require('./routes/itemRoutes');
