@@ -45,16 +45,16 @@ app.get('/', (req, res) => {
     res.send('Server is running...');
 });
 
-async function startServer() {
-    try {
-        // await connectDB();
-        app.listen(port, () => {
-            console.log(`Server is running on http://localhost:${port}`);
-        });
-    } catch (err) {
-        console.error('Failed to start the server:', err);
-        process.exit(1);
-    }
-}
+// async function startServer() {
+//     try {
+//         // await connectDB();
+//         app.listen(port, () => {
+//             console.log(`Server is running on http://localhost:${port}`);
+//         });
+//     } catch (err) {
+//         console.error('Failed to start the server:', err);
+//         process.exit(1);
+//     }
+// }
 
-startServer();
+// startServer();
