@@ -18,9 +18,11 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
+            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
             return await usersCollection.find().toArray();
         } catch (err) {
-            console.error(err);
+            return err;
+            
         }
     },
     getById: async (id) => {
