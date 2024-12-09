@@ -38,7 +38,23 @@ const DeliveryRequest = {
             const deliveryRequestsCollection = db.collection('deliveryRequests');
             const result = await deliveryRequestsCollection.updateOne(
                 { _id: new ObjectId(id) },
-                { $set: deliveryRequestData }
+                {$set: { phone: deliveryRequestData.phone,
+                    address:deliveryRequestData.address,
+                    instructions:deliveryRequestData.phone,
+                 }  }
+            );
+            return result;
+        } catch (err) {
+            console.error("Error updating delivery request:", err);
+        }
+    },
+     updatestatus: async (id, deliveryRequestData) => {
+        try {
+            const db = client.db("gp1");
+            const deliveryRequestsCollection = db.collection('deliveryRequests');
+            const result = await deliveryRequestsCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $set: { status: deliveryRequestData.status } }
             );
             return result;
         } catch (err) {

@@ -25,6 +25,19 @@ const User = {
             
         }
     },
+    addRate: async (id, rate) => {
+    try {
+        const db = client.db("gp1");
+        const usersCollection = db.collection('User');
+        const result = await usersCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $push: { rates: rate } }
+        );
+        return result;
+    } catch (err) {
+        console.error(err);
+    }
+},
     getById: async (id) => {
         try {
             const db = client.db("gp1");
@@ -38,11 +51,9 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            const updateData = {
-                username: userData.username,
-                phone: userData.phone
-            };
-            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+            
+            
+            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { name: userData.username,phone:userData.phone } });
             return result;
         } catch (err) {
             console.error(err);
@@ -53,6 +64,16 @@ const User = {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
             const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { password: newPassword } });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    updatestatus: async (id, newstatus) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { isServiceActive: newstatus } });
             return result;
         } catch (err) {
             console.error(err);

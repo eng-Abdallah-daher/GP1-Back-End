@@ -32,19 +32,25 @@ const Booking = {
             console.error("Error retrieving booking by ID:", err);
         }
     },
-    update: async (id, bookingData) => {
-        try {
-            const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
-            const result = await bookingsCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: bookingData }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error updating booking:", err);
-        }
-    },
+ update: async (id, bookingData) => {
+    try {
+        const db = client.db("gp1");
+        const bookingsCollection = db.collection('bookings');
+        const result = await bookingsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { 
+                $set: {
+                    customerName: bookingData.customerName,
+                    appointmentDate: new Date(bookingData.appointmentDate)
+                }
+            }
+        );
+        return result;
+    } catch (err) {
+        console.error("Error updating booking:", err);
+    }
+},
+
     updateStatus: async (id, status) => {
         try {
             const db = client.db("gp1");

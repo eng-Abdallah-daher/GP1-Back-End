@@ -59,6 +59,20 @@ const UserController = {
             res.status(500).json({ message: 'Error updating password', error });
         }
     },
+    updateactivestatus: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const { newstatus } = req.body;
+            const result = await User.updatestatus(userId, newstatus);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Status updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating status', error });
+        }
+    },
     delete: async (req, res) => {
         try {
             const userId = req.params.id;
@@ -99,5 +113,24 @@ const UserController = {
         }
     }
 };
+const addRateToUser = async (req, res) => {
+    const { id } = req.params;
+    const { rate } = req.body; 
 
+    if (!rate || isNaN(rate)) {
+        return res.status(400).json({ message: "Invalid rate value" });
+    }
+
+    try {
+        const result = await User.addRate(id, parseInt(rate));
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: "Rate added successfully" });
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
 module.exports = UserController;

@@ -7,7 +7,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/commentRoutes');
+const commentRoutes = require('./routes/salesRequestRoute');
 const maintenanceRequestRoutes = require('./routes/maintenanceRequestRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const cartRoutes = require('./routes/cartRoutes');
@@ -16,8 +16,9 @@ const offerRoutes = require('./routes/offerRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 const deliveryRequestRoutes = require('./routes/deliveryRequestRoutes');
 const chatRoutes = require('./routes/chatRoutes');
-// const towingserviceRoutes= require('./routes/towingserviceRoutes');
-
+const salesRequests=require('./routes/salesRequestRoute');
+const towingserviceRoutes= require('./routes/towingserviceRoutes');
+const usersignuprequests= require('./routes/userSignUpRequestRoute');
 const app = express();
 const port = 3000;
 
@@ -29,7 +30,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/posts', postRoutes);
-// app.use('/api/likes', likeRoutes);
+app.use('/api/salesRequests', salesRequests);
 app.use('/api/comments', commentRoutes);
 app.use('/api/maintenanceRequests', maintenanceRequestRoutes);
 app.use('/api/items', itemRoutes);
@@ -39,8 +40,9 @@ app.use('/api/offers', offerRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/deliveryRequests', deliveryRequestRoutes);
 app.use('/api/chats', chatRoutes);
-// app.use('/api/towingservices',towingserviceRoutes);
 
+app.use('/api/towingservices',towingserviceRoutes);
+app.use('/api/usersignuprequests', usersignuprequests);
 app.get('/', (req, res) => {
     res.send('Server is running...');
 });

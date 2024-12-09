@@ -64,8 +64,7 @@ const Chat = {
                 {
                     $push: { messages: messageData },
                     $set: {
-                        lastMessage: messageData.text,
-                        lastMessageTime: new Date(),
+                        lastMessage: new Date(),
                     }
                 }
             );

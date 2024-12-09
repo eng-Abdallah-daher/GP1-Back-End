@@ -51,8 +51,8 @@ const updateChat = async (req, res) => {
 
 const addMessageToChat = async (req, res) => {
     try {
-        const { chatId, messageData } = req.body;
-        const result = await Chat.addMessage(chatId, messageData);
+        const { id, messageData } = req.body;
+        const result = await Chat.addMessage(id, messageData);
         res.status(200).json({ message: 'Message added to chat successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error adding message to chat', error });

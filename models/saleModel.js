@@ -45,6 +45,20 @@ const Sale = {
             console.error("Error updating sale:", err);
         }
     },
+    updateQuantity: async (id, quantity) => {
+    try {
+        const db = client.db("gp1");
+        const salesCollection = db.collection('Sale');
+        const result = await salesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { quantity: quantity } }
+        );
+        return result;
+    } catch (err) {
+        console.error("Error updating quantity:", err);
+    }
+},
+
     delete: async (id) => {
         try {
             const db = client.db("gp1");

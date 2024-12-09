@@ -45,6 +45,23 @@ const SaleController = {
             res.status(500).json({ message: 'Error updating sale', error });
         }
     },
+  updateItemQuantity :async (req, res) => {
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    try {
+        const result = await Sale.updateQuantity(id, quantity);
+        res.status(200).json({
+            message: "Quantity updated successfully",
+            result: result,
+        });
+    } catch (err) {
+        res.status(500).json({
+            error: "Failed to update quantity",
+            details: err.message,
+        });
+    }
+},
     delete: async (req, res) => {
         try {
             const saleId = req.params.id;

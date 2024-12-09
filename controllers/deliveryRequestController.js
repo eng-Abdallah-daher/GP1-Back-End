@@ -45,6 +45,20 @@ const DeliveryRequestController = {
             res.status(500).json({ message: 'Error updating delivery request', error });
         }
     },
+     updatestatus: async (req, res) => {
+        try {
+            const deliveryRequestId = req.params.id;
+            const deliveryRequestData = req.body;
+            const result = await DeliveryRequest.updatestatus(deliveryRequestId, deliveryRequestData);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'Delivery request updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'Delivery request not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating delivery request', error });
+        }
+    },
     delete: async (req, res) => {
         try {
             const deliveryRequestId = req.params.id;

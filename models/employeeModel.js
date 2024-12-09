@@ -32,19 +32,20 @@ const Employee = {
             console.error("Error retrieving employee by ID:", err);
         }
     },
-    update: async (id, employeeData) => {
-        try {
-            const db = client.db("gp1");
-            const employeesCollection = db.collection('employees');
-            const result = await employeesCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: employeeData }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error updating employee:", err);
-        }
-    },
+ update: async (id, employeeData) => {
+    try {
+        const db = client.db("gp1");
+        const employeesCollection = db.collection('employees');
+        const result = await employeesCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { name: employeeData.name, position: employeeData.position } }
+        );
+        return result;
+    } catch (err) {
+        console.error("Error updating employee:", err);
+    }
+},
+
     delete: async (id) => {
         try {
             const db = client.db("gp1");
@@ -54,7 +55,33 @@ const Employee = {
         } catch (err) {
             console.error("Error deleting employee:", err);
         }
+    }, addTask: async (employeeId, taskData) => {
+    try {
+      const db = client.db("gp1");
+      const employeesCollection = db.collection('employees');
+      const result = await employeesCollection.updateOne(
+        { _id: new ObjectId(employeeId) },
+        { $push: { assignedTasks: taskData } }
+      );
+      return result;
+    } catch (err) {
+      console.error("Error adding task to employee:", err);
     }
+  },
+
+  removeTask: async (employeeId, taskId) => {
+    try {
+      const db = client.db("gp1");
+      const employeesCollection = db.collection('employees');
+      const result = await employeesCollection.updateOne(
+        { _id: new ObjectId(employeeId) },
+        { $pull: { assignedTasks: { taskId } } }
+      );
+      return result;
+    } catch (err) {
+      console.error("Error removing task from employee:", err);
+    }
+  }
 };
 
 module.exports = Employee;

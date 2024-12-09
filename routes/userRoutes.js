@@ -6,9 +6,10 @@ router.post('/', UserController.create);
 router.get('/', UserController.getAll);
 router.get('/:id', UserController.getById);
 router.put('/:id', UserController.update);
-router.put('/:id/password', UserController.updatePassword); // Route for updating password
+router.put('/:id/password', UserController.updatePassword); 
+router.put('/:id/activestatus', UserController.updateactivestatus); 
 router.delete('/:id', UserController.delete);
 router.get('/email/:email', UserController.getByEmail);
 router.post('/authenticate', UserController.authenticate);
-
+router.post('newrate/:id/rate', addRateToUser);
 module.exports = router;

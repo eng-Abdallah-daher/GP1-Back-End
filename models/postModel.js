@@ -55,19 +55,23 @@ const Post = {
             console.error("Error deleting post:", err);
         }
     },
-    addLike: async (id, userId) => {
-        try {
-            const db = client.db("gp1");
-            const postsCollection = db.collection('Post');
-            const result = await postsCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $addToSet: { likes: userId } }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error adding like:", err);
-        }
-    },
+addLike: async (id, userId) => {
+    try {
+        const db = client.db("gp1");
+        const postsCollection = db.collection('Post');
+        const result = await postsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            {
+                $addToSet: { likes: userId }, 
+                $inc: { likeCount: 1 }     
+            }
+        );
+        return result;
+    } catch (err) {
+        console.error("Error adding like:", err);
+    }
+},
+
     addComment: async (id, commentData) => {
         try {
             const db = client.db("gp1");

@@ -32,19 +32,26 @@ const Item = {
             console.error("Error retrieving item by ID:", err);
         }
     },
-    update: async (id, itemData) => {
-        try {
-            const db = client.db("gp1");
-            const itemsCollection = db.collection('items');
-            const result = await itemsCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: itemData }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error updating item:", err);
-        }
-    },
+   update: async (id, itemData) => {
+    try {
+        const db = client.db("gp1");
+        const itemsCollection = db.collection('items');
+        const result = await itemsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { 
+                $set: {
+                    name: itemData.name,
+                    availableQuantity: itemData.quantity,
+                    price: itemData.price
+                }
+            }
+        );
+        return result;
+    } catch (err) {
+        console.error("Error updating item:", err);
+    }
+},
+
     delete: async (id) => {
         try {
             const db = client.db("gp1");

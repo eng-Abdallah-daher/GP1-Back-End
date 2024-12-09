@@ -61,7 +61,7 @@ const PostController = {
     addLike: async (req, res) => {
         try {
             const postId = req.params.id;
-            const userId = req.body.userId; // Assumes userId is passed in the body
+            const userId = req.body.userId; 
             const result = await Post.addLike(postId, userId);
             res.status(200).json({ message: 'Like added successfully', data: result });
         } catch (error) {

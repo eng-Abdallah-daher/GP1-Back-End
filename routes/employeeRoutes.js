@@ -7,5 +7,6 @@ router.get('/', EmployeeController.getAll);
 router.get('/:id', EmployeeController.getById);
 router.put('/:id', EmployeeController.update);
 router.delete('/:id', EmployeeController.delete);
-
+router.post('/add-task', EmployeeController.addTask);
+router.delete('/remove-task', EmployeeController.removeTask);
 module.exports = router;

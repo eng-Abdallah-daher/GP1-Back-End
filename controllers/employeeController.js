@@ -57,7 +57,35 @@ const EmployeeController = {
         } catch (error) {
             res.status(500).json({ message: 'Error deleting employee', error });
         }
+    },
+
+    addTask: async (req, res) => {
+    try {
+      const { employeeId, taskData } = req.body;
+      const result = await Employee.addTask(employeeId, taskData);
+      if (result.modifiedCount > 0) {
+        res.status(200).json({ message: "Task added successfully" });
+      } else {
+        res.status(404).json({ message: "Employee not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Error adding task", error });
     }
+  },
+
+  removeTask: async (req, res) => {
+    try {
+      const { employeeId, taskId } = req.body;
+      const result = await Employee.removeTask(employeeId, taskId);
+      if (result.modifiedCount > 0) {
+        res.status(200).json({ message: "Task removed successfully" });
+      } else {
+        res.status(404).json({ message: "Task not found or employee not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Error removing task", error });
+    }
+  }
 };
 
 module.exports = EmployeeController;
