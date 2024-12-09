@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TowingServiceController = require('../controllers/towingserviceController');
+const TowingServiceController = require('../controllers/towingServiceController');
 
 router.post('/', TowingServiceController.create);
 router.get('/', TowingServiceController.getAll);
