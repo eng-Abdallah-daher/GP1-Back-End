@@ -111,9 +111,7 @@ const UserController = {
         } catch (error) {
             res.status(500).json({ message: 'Error authenticating user', error });
         }
-    }
-};
-const addRateToUser = async (req, res) => {
+    },addRateToUser : async (req, res) => {
     const { id } = req.params;
     const { rate } = req.body; 
 
@@ -132,5 +130,7 @@ const addRateToUser = async (req, res) => {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     }
-};
+}
+}; 
+
 module.exports = UserController;
