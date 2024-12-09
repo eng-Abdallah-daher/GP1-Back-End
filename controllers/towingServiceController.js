@@ -1,4 +1,4 @@
-const TowingService = require('../models/towingServiceController');
+const TowingService = require('../models/towingServiceModel');
 
 const TowingServiceController = {
     create: async (req, res) => {
