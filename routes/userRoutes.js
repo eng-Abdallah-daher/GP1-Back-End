@@ -11,5 +11,5 @@ router.put('/:id/activestatus', UserController.updateactivestatus);
 router.delete('/:id', UserController.delete);
 router.get('/email/:email', UserController.getByEmail);
 router.post('/authenticate', UserController.authenticate);
-router.post('newrate/:id/rate', addRateToUser);
+router.post('newrate/:id/rate', UserController.addRateToUser);
 module.exports = router;
