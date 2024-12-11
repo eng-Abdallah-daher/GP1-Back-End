@@ -23,15 +23,35 @@ const Chat = {
             console.error("Error retrieving chats:", err);
         }
     },
-    getById: async (id) => {
-        try {
-            const db = client.db("gp1");
-            const chatsCollection = db.collection('Chat');
-            return await chatsCollection.findOne({ _id: new ObjectId(id) });
-        } catch (err) {
-            console.error("Error retrieving chat by ID:", err);
+ 
+
+getById: async (id) => {
+    try {
+        console.log("Received id:", id);
+        
+      
+
+        const db = client.db("gp1");
+        const chatsCollection = db.collection('Chat');
+        
+        const chats = await chatsCollection.find().toArray();
+        const chat = chats.find(chat => chat.id.toString() == id);
+
+        if (!chat) {
+            throw new Error("Chat not found");
         }
-    },
+
+        const messages = chat.messages
+
+        return {
+            
+            messages: messages
+        };
+    } catch (err) {
+        console.error("Error retrieving chat by ID:", err);
+    }
+}
+,
     update: async (id, chatData) => {
         try {
             const db = client.db("gp1");
