@@ -18,6 +18,7 @@ const AvailableSchedules = {
         try {
             const db = client.db("gp1");
             const schedulesCollection = db.collection('availableSchedules');
+          
             return await schedulesCollection.find().toArray();
         } catch (err) {
             console.error("Error retrieving schedules:", err);

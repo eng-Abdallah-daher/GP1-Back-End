@@ -7,7 +7,7 @@ const Booking = {
     create: async (bookingData) => {
         try {
             const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
+            const bookingsCollection = db.collection('Booking');
             const result = await bookingsCollection.insertOne(bookingData);
             return result;
         } catch (err) {
@@ -17,7 +17,7 @@ const Booking = {
     getAll: async () => {
         try {
             const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
+            const bookingsCollection = db.collection('Booking');
             return await bookingsCollection.find().toArray();
         } catch (err) {
             console.error("Error retrieving bookings:", err);
@@ -26,7 +26,7 @@ const Booking = {
     getById: async (id) => {
         try {
             const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
+            const bookingsCollection = db.collection('Booking');
             return await bookingsCollection.findOne({ _id: new ObjectId(id) });
         } catch (err) {
             console.error("Error retrieving booking by ID:", err);
@@ -35,7 +35,7 @@ const Booking = {
  update: async (id, bookingData) => {
     try {
         const db = client.db("gp1");
-        const bookingsCollection = db.collection('bookings');
+        const bookingsCollection = db.collection('Booking');
         const result = await bookingsCollection.updateOne(
             { _id: new ObjectId(id) },
             { 
@@ -54,7 +54,7 @@ const Booking = {
     updateStatus: async (id, status) => {
         try {
             const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
+            const bookingsCollection = db.collection('Booking');
             const result = await bookingsCollection.updateOne(
                 { _id: new ObjectId(id) },
                 { $set: { status: status } }
@@ -67,7 +67,7 @@ const Booking = {
     delete: async (id) => {
         try {
             const db = client.db("gp1");
-            const bookingsCollection = db.collection('bookings');
+            const bookingsCollection = db.collection('Booking');
             const result = await bookingsCollection.deleteOne({ _id: new ObjectId(id) });
             return result;
         } catch (err) {

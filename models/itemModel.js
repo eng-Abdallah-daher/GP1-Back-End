@@ -7,7 +7,7 @@ const Item = {
     create: async (itemData) => {
         try {
             const db = client.db("gp1");
-            const itemsCollection = db.collection('items');
+            const itemsCollection = db.collection('Item');
             const result = await itemsCollection.insertOne(itemData);
             return result;
         } catch (err) {
@@ -17,7 +17,7 @@ const Item = {
     getAll: async () => {
         try {
             const db = client.db("gp1");
-            const itemsCollection = db.collection('items');
+            const itemsCollection = db.collection('Item');
             return await itemsCollection.find().toArray();
         } catch (err) {
             console.error("Error retrieving all items:", err);
@@ -26,7 +26,7 @@ const Item = {
     getById: async (id) => {
         try {
             const db = client.db("gp1");
-            const itemsCollection = db.collection('items');
+            const itemsCollection = db.collection('Item');
             return await itemsCollection.findOne({ _id: new ObjectId(id) });
         } catch (err) {
             console.error("Error retrieving item by ID:", err);
@@ -34,8 +34,9 @@ const Item = {
     },
    update: async (id, itemData) => {
     try {
+        
         const db = client.db("gp1");
-        const itemsCollection = db.collection('items');
+        const itemsCollection = db.collection('Item');
         const result = await itemsCollection.updateOne(
             { _id: new ObjectId(id) },
             { 
@@ -55,7 +56,7 @@ const Item = {
     delete: async (id) => {
         try {
             const db = client.db("gp1");
-            const itemsCollection = db.collection('items');
+            const itemsCollection = db.collection('Item');
             const result = await itemsCollection.deleteOne({ _id: new ObjectId(id) });
             return result;
         } catch (err) {

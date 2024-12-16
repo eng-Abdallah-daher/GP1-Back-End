@@ -123,7 +123,25 @@ addLike: async (id, userId) => {
         } catch (err) {
             console.error("Error deleting comment:", err);
         }
+    },
+    removeLike: async (postId, userId) => {
+    try {
+        const db = client.db("gp1");
+        const postsCollection = db.collection('Post');
+        const result = await postsCollection.updateOne(
+            { _id: new ObjectId(postId) },
+            {
+                $pull: { likes: { userId: userId } },  
+                $inc: { likeCount: -1 }
+            }
+        );
+        
+        return result;
+    } catch (err) {
+        console.error("Error removing like:", err);
     }
+}
+
 };
 
 module.exports = Post;

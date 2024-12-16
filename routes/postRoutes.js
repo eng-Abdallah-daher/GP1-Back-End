@@ -9,5 +9,6 @@ router.put('/:id', PostController.update);
 router.delete('/:id', PostController.delete);
 router.post('/:id/like', PostController.addLike);  
 router.post('/:id/comment', PostController.addComment); 
+router.delete('/likes', PostController.removelike); 
 
 module.exports = router;

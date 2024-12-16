@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require('mongodb');
+const { isValidObjectId } = require('mongoose');
 
 const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
 const client = new MongoClient(uri);
@@ -18,7 +19,6 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
             return await usersCollection.find().toArray();
         } catch (err) {
             return err;
@@ -53,7 +53,7 @@ const User = {
             const usersCollection = db.collection('User');
             
             
-            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { name: userData.username,phone:userData.phone } });
+            const result = await usersCollection.updateOne({ email: id }, { $set: { name: userData.name,phone:userData.phone } });
             return result;
         } catch (err) {
             console.error(err);
@@ -73,7 +73,9 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { isServiceActive: newstatus } });
+       
+
+            const result = await usersCollection.updateOne({ email: id }, { $set: { isServiceActive: newstatus } });
             return result;
         } catch (err) {
             console.error(err);
@@ -83,7 +85,7 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await usersCollection.deleteOne({ email: id });
             return result;
         } catch (err) {
             console.error(err);

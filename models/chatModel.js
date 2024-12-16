@@ -79,7 +79,7 @@ getById: async (id) => {
     try {
         const db = client.db("gp1");
         const chatsCollection = db.collection("Chat");
-        console.log(chatId,v1,v2,v3);
+     
         const result = await chatsCollection.updateOne(
 
             { id: chatId },

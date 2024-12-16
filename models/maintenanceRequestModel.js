@@ -7,7 +7,7 @@ const MaintenanceRequest = {
     create: async (requestData) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             const result = await maintenanceRequestsCollection.insertOne(requestData);
             return result;
         } catch (err) {
@@ -17,7 +17,7 @@ const MaintenanceRequest = {
     getAll: async () => {
         try {
             const db = client.db("gp1");
-            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             return await maintenanceRequestsCollection.find().toArray();
         } catch (err) {
             console.error("Error retrieving all maintenance requests:", err);
@@ -26,7 +26,7 @@ const MaintenanceRequest = {
     getById: async (id) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             return await maintenanceRequestsCollection.findOne({ _id: new ObjectId(id) });
         } catch (err) {
             console.error("Error retrieving maintenance request by ID:", err);
@@ -35,7 +35,7 @@ const MaintenanceRequest = {
     update: async (id, requestData) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             const result = await maintenanceRequestsCollection.updateOne(
                 { _id: new ObjectId(id) },
                 { $set: requestData }
@@ -48,7 +48,7 @@ const MaintenanceRequest = {
     delete: async (id) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRequestsCollection = db.collection('maintenanceRequests');
+            const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             const result = await maintenanceRequestsCollection.deleteOne({ _id: new ObjectId(id) });
             return result;
         } catch (err) {

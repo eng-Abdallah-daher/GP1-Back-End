@@ -55,13 +55,23 @@ const Employee = {
         } catch (err) {
             console.error("Error deleting employee:", err);
         }
-    }, addTask: async (employeeId, taskData) => {
+    },
+     addTask: async (employeeId,date,time,task,taskid,owenerid) => {
+        console.log(date,time,task,taskid,owenerid);
     try {
       const db = client.db("gp1");
       const employeesCollection = db.collection('employees');
       const result = await employeesCollection.updateOne(
-        { _id: new ObjectId(employeeId) },
-        { $push: { assignedTasks: taskData } }
+        { id: employeeId },
+        { $push: { assignedTasks: {
+
+           
+        'date': date,
+        'time': time,
+        'task': task,
+        'taskId': taskid,
+      'ownerId': owenerid,
+        }} }
       );
       return result;
     } catch (err) {

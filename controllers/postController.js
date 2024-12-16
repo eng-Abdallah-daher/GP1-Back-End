@@ -71,8 +71,18 @@ const PostController = {
     addComment: async (req, res) => {
         try {
             const postId = req.params.id;
-            const commentData = req.body; // Assumes commentData is passed in the body
+            const commentData = req.body; 
             const result = await Post.addComment(postId, commentData);
+            res.status(200).json({ message: 'Comment added successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error adding comment', error });
+        }
+    },
+     removelike: async (req, res) => {
+        try {
+         
+            const {postId,userId} = req.body; 
+            const result = await Post.removeLike(postId, userId);
             res.status(200).json({ message: 'Comment added successfully', data: result });
         } catch (error) {
             res.status(500).json({ message: 'Error adding comment', error });

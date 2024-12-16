@@ -61,8 +61,9 @@ const EmployeeController = {
 
     addTask: async (req, res) => {
     try {
-      const { employeeId, taskData } = req.body;
-      const result = await Employee.addTask(employeeId, taskData);
+      const { employeeId,date,time,task,taskId,ownerId } = req.body;
+// console.log(date,time,task,taskId,ownerId);
+      const result = await Employee.addTask(employeeId, date, time, task,taskId, ownerId);
       if (result.modifiedCount > 0) {
         res.status(200).json({ message: "Task added successfully" });
       } else {

@@ -7,7 +7,7 @@ const MaintenanceRecord = {
     create: async (recordData) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRecordsCollection = db.collection('maintenanceRecords');
+            const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
             const result = await maintenanceRecordsCollection.insertOne(recordData);
             return result;
         } catch (err) {
@@ -17,7 +17,7 @@ const MaintenanceRecord = {
     getAll: async () => {
         try {
             const db = client.db("gp1");
-            const maintenanceRecordsCollection = db.collection('maintenanceRecords');
+            const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
             return await maintenanceRecordsCollection.find().toArray();
         } catch (err) {
             console.error("Error retrieving maintenance records:", err);
@@ -26,7 +26,7 @@ const MaintenanceRecord = {
     getById: async (id) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRecordsCollection = db.collection('maintenanceRecords');
+            const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
             return await maintenanceRecordsCollection.findOne({ _id: new ObjectId(id) });
         } catch (err) {
             console.error("Error retrieving maintenance record by ID:", err);
@@ -35,7 +35,7 @@ const MaintenanceRecord = {
     delete: async (id) => {
         try {
             const db = client.db("gp1");
-            const maintenanceRecordsCollection = db.collection('maintenanceRecords');
+            const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
             const result = await maintenanceRecordsCollection.deleteOne({ _id: new ObjectId(id) });
             return result;
         } catch (err) {
