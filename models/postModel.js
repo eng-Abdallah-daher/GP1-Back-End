@@ -27,7 +27,7 @@ const Post = {
         try {
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
-            return await postsCollection.findOne({ _id: new ObjectId(id) });
+            return await postsCollection.findOne({id: Number(id) });
         } catch (err) {
             console.error("Error retrieving post by ID:", err);
         }
@@ -37,7 +37,7 @@ const Post = {
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
             const result = await postsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                {id: Number(id) },
                 { $set: postData }
             );
             return result;
@@ -49,7 +49,7 @@ const Post = {
         try {
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
-            const result = await postsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await postsCollection.deleteOne({ id: Number(id)});
             return result;
         } catch (err) {
             console.error("Error deleting post:", err);
@@ -60,7 +60,7 @@ addLike: async (id, userId) => {
         const db = client.db("gp1");
         const postsCollection = db.collection('Post');
         const result = await postsCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { id: Number(id) },
             {
                 $addToSet: { likes: userId }, 
                 $inc: { likeCount: 1 }     
@@ -77,71 +77,95 @@ addLike: async (id, userId) => {
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
             const result = await postsCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $push: { comments: commentData } }
+                { id: Number(id) },
+                { $push: { comments: commentData },
+            $inc: { commentCount: 1 } }
             );
             return result;
         } catch (err) {
             console.error("Error adding comment:", err);
         }
     },
-    addReplyToComment: async (postId, commentId, replyData) => {
-        try {
-            const db = client.db("gp1");
-            const postsCollection = db.collection('Post');
-            const result = await postsCollection.updateOne(
-                { _id: new ObjectId(postId), "comments.commentId": commentId },
-                { $push: { "comments.$.replies": replyData } }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error adding reply to comment:", err);
-        }
-    },
+   
     updateComment: async (postId, commentId, updatedCommentData) => {
         try {
+            console.log(updatedCommentData)
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
             const result = await postsCollection.updateOne(
-                { _id: new ObjectId(postId), "comments.commentId": commentId },
-                { $set: { "comments.$.text": updatedCommentData.text } }
+                { id: Number(postId), "comments.commentid": commentId },
+                { $set: { "comments.$.text": updatedCommentData } }
             );
             return result;
         } catch (err) {
             console.error("Error updating comment:", err);
         }
-    },
-    deleteComment: async (postId, commentId) => {
+    },    addReply: async (postId, commentId, replyData) => {
         try {
-            const db = client.db("gp1");
+            const db = client.db("gp1"); 
             const postsCollection = db.collection('Post');
+           
             const result = await postsCollection.updateOne(
-                { _id: new ObjectId(postId) },
-                { $pull: { comments: { commentId: commentId } } }
+                { id: Number(postId), 'comments.commentid': Number(commentId) }, 
+                { $push: { 'comments.$.replies': replyData },
+            $inc: { commentCount: 1 } } 
             );
+            
             return result;
         } catch (err) {
-            console.error("Error deleting comment:", err);
+            console.error("Error adding reply:", err);
+            throw err;
         }
     },
-    removeLike: async (postId, userId) => {
+ removeLike: async (id, userId) => {
     try {
+      
         const db = client.db("gp1");
         const postsCollection = db.collection('Post');
         const result = await postsCollection.updateOne(
-            { _id: new ObjectId(postId) },
+            { id: Number(id) },
             {
-                $pull: { likes: { userId: userId } },  
-                $inc: { likeCount: -1 }
+                $pull: { likes: Number(userId )}, 
+                $inc: { likeCount: -1 }  
             }
         );
-        
+
         return result;
     } catch (err) {
         console.error("Error removing like:", err);
     }
-}
+}, removeComment: async (id, commentId) => {
+    try {
+      const db = client.db("gp1");
+      const postsCollection = db.collection('Post');
+      const result = await postsCollection.updateOne(
+        { id: Number(id) },
+        { $pull: { comments: { commentid: Number(commentId) } }, $inc: { commentCount: -1 } }
+      );
+      return result;
+    } catch (err) {
+      console.error("Error removing comment:", err);
+    }
+  },
+  editReply:async(postId, commentId, replyId, newText) =>{
 
-};
+  try {
+    console.log(postId, commentId, replyId, newText);
+    const db = client.db('gp1');
+    const postsCollection = db.collection('Post');
+    const result = await postsCollection.updateOne(
+      { id: postId, 'comments.commentid': commentId, 'comments.replies.commentid': replyId },
+      { $set: { 'comments.$[comment].replies.$[reply].text': newText } },
+      { arrayFilters: [{ 'comment.commentid': commentId }, { 'reply.commentid': replyId }] }
+    );
+    return result;
+  } catch (error) {
+    console.error("Error updating reply:", error);
+  } finally {
+    
+  }
+
+  }
+}
 
 module.exports = Post;

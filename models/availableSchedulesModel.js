@@ -28,7 +28,7 @@ const AvailableSchedules = {
         try {
             const db = client.db("gp1");
             const schedulesCollection = db.collection('availableSchedules');
-            return await schedulesCollection.findOne({ _id: new ObjectId(id) });
+            return await schedulesCollection.findOne({ taskId: id });
         } catch (err) {
             console.error("Error retrieving schedule by ID:", err);
         }
@@ -38,7 +38,7 @@ const AvailableSchedules = {
             const db = client.db("gp1");
             const schedulesCollection = db.collection('availableSchedules');
             const result = await schedulesCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { taskId: id },
                 { $set: scheduleData }
             );
             return result;
@@ -50,7 +50,7 @@ const AvailableSchedules = {
         try {
             const db = client.db("gp1");
             const schedulesCollection = db.collection('availableSchedules');
-            const result = await schedulesCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await schedulesCollection.deleteOne({ taskId: id });
             return result;
         } catch (err) {
             console.error("Error deleting schedule:", err);

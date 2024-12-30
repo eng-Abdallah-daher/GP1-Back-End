@@ -22,6 +22,7 @@ const ItemController = {
         try {
             const itemId = req.params.id;
             const item = await Item.getById(itemId);
+            
             if (item) {
                 res.status(200).json({ message: 'Item retrieved successfully', data: item });
             } else {
@@ -33,9 +34,12 @@ const ItemController = {
     },
     update: async (req, res) => {
         try {
+         
             const itemId = req.params.id;
             const itemData = req.body;
+              
             const result = await Item.update(itemId, itemData);
+           
             if (result.matchedCount > 0) {
                 res.status(200).json({ message: 'Item updated successfully', data: result });
             } else {

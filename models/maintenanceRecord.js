@@ -27,7 +27,7 @@ const MaintenanceRecord = {
         try {
             const db = client.db("gp1");
             const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
-            return await maintenanceRecordsCollection.findOne({ _id: new ObjectId(id) });
+            return await maintenanceRecordsCollection.findOne({ id: Number(id)});
         } catch (err) {
             console.error("Error retrieving maintenance record by ID:", err);
         }
@@ -36,7 +36,7 @@ const MaintenanceRecord = {
         try {
             const db = client.db("gp1");
             const maintenanceRecordsCollection = db.collection('MaintenanceRecord');
-            const result = await maintenanceRecordsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await maintenanceRecordsCollection.deleteOne({id: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting maintenance record:", err);

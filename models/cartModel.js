@@ -27,7 +27,7 @@ const Cart = {
         try {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
-            return await cartsCollection.findOne({ _id: new ObjectId(id) });
+            return await cartsCollection.findOne({ cartId: Number(id)});
         } catch (err) {
             console.error("Error retrieving cart by ID:", err);
         }
@@ -37,7 +37,7 @@ const Cart = {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
             const result = await cartsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                {  cartId: Number(id) },
                 { $set: cartData }
             );
             return result;
@@ -49,18 +49,18 @@ const Cart = {
         try {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
-            const result = await cartsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await cartsCollection.deleteOne({ cartId: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting cart:", err);
         }
     },
-    addItem: async (cartId, itemData) => {
+    addItem: async (id, itemData) => {
         try {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
             const result = await cartsCollection.updateOne(
-                { _id: new ObjectId(cartId) },
+                {  cartId: Number(id) },
                 { $push: { items: itemData } }
             );
             return result;
@@ -68,12 +68,12 @@ const Cart = {
             console.error("Error adding item to cart:", err);
         }
     },
-    removeItem: async (cartId, itemId) => {
+    removeItem: async (id, itemId) => {
         try {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
             const result = await cartsCollection.updateOne(
-                { _id: new ObjectId(cartId) },
+                {  cartId: Number(id) },
                 { $pull: { items: { id: itemId } } }
             );
             return result;

@@ -27,7 +27,7 @@ const Sale = {
         try {
             const db = client.db("gp1");
             const salesCollection = db.collection('Sale');
-            return await salesCollection.findOne({ _id: new ObjectId(id) });
+            return await salesCollection.findOne({ id: Number(id) });
         } catch (err) {
             console.error("Error retrieving sale by ID:", err);
         }
@@ -37,7 +37,7 @@ const Sale = {
             const db = client.db("gp1");
             const salesCollection = db.collection('Sale');
             const result = await salesCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id: Number(id) },
                 { $set: saleData }
             );
             return result;
@@ -50,7 +50,7 @@ const Sale = {
         const db = client.db("gp1");
         const salesCollection = db.collection('Sale');
         const result = await salesCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { id: Number(id) },
             { $set: { quantity: quantity } }
         );
         return result;
@@ -63,7 +63,7 @@ const Sale = {
         try {
             const db = client.db("gp1");
             const salesCollection = db.collection('Sale');
-            const result = await salesCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await salesCollection.deleteOne({ id: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting sale:", err);

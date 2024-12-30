@@ -15,7 +15,7 @@ const TowingServiceController = {
             const towingServices = await TowingService.getAll();
             res.status(200).json({ message: 'Towing Services retrieved successfully', data: towingServices });
         } catch (error) {
-            console.log(error);
+           
             res.status(500).json({ message: 'Error retrieving towing services', error });
 
         }

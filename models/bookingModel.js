@@ -27,7 +27,7 @@ const Booking = {
         try {
             const db = client.db("gp1");
             const bookingsCollection = db.collection('Booking');
-            return await bookingsCollection.findOne({ _id: new ObjectId(id) });
+            return await bookingsCollection.findOne({ bookingId:Number(id)  });
         } catch (err) {
             console.error("Error retrieving booking by ID:", err);
         }
@@ -37,7 +37,7 @@ const Booking = {
         const db = client.db("gp1");
         const bookingsCollection = db.collection('Booking');
         const result = await bookingsCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { bookingId:Number(id)  },
             { 
                 $set: {
                     customerName: bookingData.customerName,
@@ -56,7 +56,7 @@ const Booking = {
             const db = client.db("gp1");
             const bookingsCollection = db.collection('Booking');
             const result = await bookingsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { bookingId:Number(id)  },
                 { $set: { status: status } }
             );
             return result;
@@ -68,7 +68,7 @@ const Booking = {
         try {
             const db = client.db("gp1");
             const bookingsCollection = db.collection('Booking');
-            const result = await bookingsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await bookingsCollection.deleteOne({ bookingId:Number(id)  });
             return result;
         } catch (err) {
             console.error("Error deleting booking:", err);

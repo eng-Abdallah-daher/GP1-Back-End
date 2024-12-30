@@ -28,7 +28,7 @@ const Complaint = {
         try {
             const db = client.db("gp1");
             const complaintsCollection = db.collection('complaints');
-            return await complaintsCollection.findOne({ _id: new ObjectId(id) });
+            return await complaintsCollection.findOne({ id:Number(id) });
         } catch (err) {
             console.error("Error retrieving complaint by ID:", err);
         }
@@ -38,7 +38,7 @@ const Complaint = {
             const db = client.db("gp1");
             const complaintsCollection = db.collection('complaints');
             const result = await complaintsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id:Number(id) },
                 { $set: complaintData }
             );
             return result;
@@ -50,7 +50,7 @@ const Complaint = {
         try {
             const db = client.db("gp1");
             const complaintsCollection = db.collection('complaints');
-            const result = await complaintsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await complaintsCollection.deleteOne({ id:Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting complaint:", err);

@@ -27,7 +27,7 @@ const DeliveryRequest = {
         try {
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
-            return await deliveryRequestsCollection.findOne({ _id: new ObjectId(id) });
+            return await deliveryRequestsCollection.findOne({ id:Number(id) });
         } catch (err) {
             console.error("Error retrieving delivery request by ID:", err);
         }
@@ -37,7 +37,7 @@ const DeliveryRequest = {
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
             const result = await deliveryRequestsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id:Number(id)  },
                 {$set: { phone: deliveryRequestData.phone,
                     address:deliveryRequestData.address,
                     instructions:deliveryRequestData.phone,
@@ -53,7 +53,7 @@ const DeliveryRequest = {
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
             const result = await deliveryRequestsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id:Number(id) },
                 { $set: { status: deliveryRequestData.status } }
             );
             return result;
@@ -65,7 +65,7 @@ const DeliveryRequest = {
         try {
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
-            const result = await deliveryRequestsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await deliveryRequestsCollection.deleteOne({ id:Number(id)  });
             return result;
         } catch (err) {
             console.error("Error deleting delivery request:", err);

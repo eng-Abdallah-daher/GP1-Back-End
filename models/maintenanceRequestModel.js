@@ -27,7 +27,7 @@ const MaintenanceRequest = {
         try {
             const db = client.db("gp1");
             const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
-            return await maintenanceRequestsCollection.findOne({ _id: new ObjectId(id) });
+            return await maintenanceRequestsCollection.findOne({ requestid: Number(id) });
         } catch (err) {
             console.error("Error retrieving maintenance request by ID:", err);
         }
@@ -37,7 +37,7 @@ const MaintenanceRequest = {
             const db = client.db("gp1");
             const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
             const result = await maintenanceRequestsCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { requestid: Number(id) },
                 { $set: requestData }
             );
             return result;
@@ -49,7 +49,7 @@ const MaintenanceRequest = {
         try {
             const db = client.db("gp1");
             const maintenanceRequestsCollection = db.collection('MaintenanceRequest');
-            const result = await maintenanceRequestsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await maintenanceRequestsCollection.deleteOne({ requestid: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting maintenance request:", err);

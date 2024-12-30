@@ -42,7 +42,7 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            return await usersCollection.findOne({ _id: new ObjectId(id) });
+            return await usersCollection.findOne({ id:Number(id) });
         } catch (err) {
             console.error(err);
         }

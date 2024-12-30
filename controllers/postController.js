@@ -80,14 +80,80 @@ const PostController = {
     },
      removelike: async (req, res) => {
         try {
-         
-            const {postId,userId} = req.body; 
-            const result = await Post.removeLike(postId, userId);
-            res.status(200).json({ message: 'Comment added successfully', data: result });
+           const id = req.params.id;
+           const userId = req.params.id2;
+            
+           
+ 
+            const result = await Post.removeLike(id, userId);
+            res.status(200).json({ message: 'like removed successfully', data: result });
         } catch (error) {
-            res.status(500).json({ message: 'Error adding comment', error });
+            res.status(500).json({ message: 'Error adding like', error });
         }
+    },  addReply: async (req, res) => {
+        try {
+            const postId = req.params.postId;
+            const commentId = req.params.commentId;
+            const replyData = req.body;
+            const result = await Post.addReply(postId, commentId, replyData);
+
+            res.status(200).json({ message: 'Reply added successfully', data: result });
+        } catch (error) {
+            res.status(500).json({ message: 'Error adding reply', error });
+        }
+    },
+     removeComment: async (req, res) => {
+    try {
+      const postId = req.params.id; 
+      const commentId = parseInt(req.params.commentId); 
+      const result = await Post.removeComment(postId, commentId);
+
+      if (result.modifiedCount === 0) {
+        return res.status(404).json({ message: 'Comment not found' });
+      }
+
+      res.status(200).json({ message: 'Comment removed successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error removing comment', error: error.message });
     }
+  },
+    updateComment: async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const commentId = parseInt(req.params.commentId);
+      const newText = req.body.text;
+
+      if (!newText) {
+        return res.status(400).json({ message: 'New text is required' });
+      }
+
+      const result = await Post.updateComment(postId, commentId, newText);
+
+      if (result.modifiedCount === 0) {
+        return res.status(404).json({ message: 'Comment not found' });
+      }
+
+      res.status(200).json({ message: 'Comment updated successfully', data: result });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating comment', error: error.message });
+    }
+  },
+  updateReply: async(req, res)=> {
+  try {
+    const { postId, commentId, replyId } = req.params;
+    const { newText } = req.body;
+    const result = await Post.editReply(postId, commentId, replyId, newText);
+    if(result){
+        console.log(result);
+    }
+    res.status(200).json({ message: 'Reply updated successfully', data: result });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating reply', error });
+  }
+}
+
 };
 
 module.exports = PostController;

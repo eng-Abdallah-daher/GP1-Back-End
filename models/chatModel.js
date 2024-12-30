@@ -27,7 +27,7 @@ const Chat = {
 
 getById: async (id) => {
     try {
-        console.log("Received id:", id);
+       
         
       
 

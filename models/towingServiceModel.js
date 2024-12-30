@@ -27,7 +27,7 @@ const TowingService = {
         try {
             const db = client.db("gp1");
             const towingServicesCollection = db.collection('towingServices');
-            return await towingServicesCollection.findOne({ _id: new ObjectId(id) });
+            return await towingServicesCollection.findOne({id:Number(id) });
         } catch (err) {
             console.error("Error retrieving towing service by ID:", err);
         }
@@ -37,7 +37,7 @@ const TowingService = {
             const db = client.db("gp1");
             const towingServicesCollection = db.collection('towingServices');
             const result = await towingServicesCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id:Number(id) },
                 { $set: towingServiceData }
             );
             return result;
@@ -49,7 +49,7 @@ const TowingService = {
         try {
             const db = client.db("gp1");
             const towingServicesCollection = db.collection('towingServices');
-            const result = await towingServicesCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await towingServicesCollection.deleteOne({ id:Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting towing service:", err);

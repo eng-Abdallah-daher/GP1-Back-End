@@ -27,7 +27,7 @@ const SalesRequest = {
     try {
       const db = client.db("gp1");
       const salesRequestsCollection = db.collection("salesRequests");
-      return await salesRequestsCollection.findOne({ _id: new ObjectId(id) });
+      return await salesRequestsCollection.findOne({id: Number(id) });
     } catch (err) {
       console.error("Error retrieving sales request by ID:", err);
     }
@@ -36,7 +36,7 @@ const SalesRequest = {
     try {
       const db = client.db("gp1");
       const salesRequestsCollection = db.collection("salesRequests");
-      const result = await salesRequestsCollection.deleteOne({ _id: new ObjectId(id) });
+      const result = await salesRequestsCollection.deleteOne({ id: Number(id) });
       return result;
     } catch (err) {
       console.error("Error deleting sales request:", err);

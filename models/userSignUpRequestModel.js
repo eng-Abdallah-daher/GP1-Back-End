@@ -27,7 +27,7 @@ const UserSignUpRequest = {
     try {
       const db = client.db("gp1");
       const userRequestsCollection = db.collection('UserSignUpRequests');
-      const result = await userRequestsCollection.deleteOne({ id: id });
+      const result = await userRequestsCollection.deleteOne({ requestid: Number(id) });
       return result;
     } catch (err) {
       console.error("Error deleting user sign-up request:", err);

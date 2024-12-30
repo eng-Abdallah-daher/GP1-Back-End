@@ -8,5 +8,5 @@ router.get('/:id', EmployeeController.getById);
 router.put('/:id', EmployeeController.update);
 router.delete('/:id', EmployeeController.delete);
 router.post('/add-task', EmployeeController.addTask);
-router.delete('/remove-task', EmployeeController.removeTask);
+router.delete('/remove-task/:id', EmployeeController.removeTask);
 module.exports = router;

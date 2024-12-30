@@ -27,7 +27,7 @@ const Offer = {
         try {
             const db = client.db("gp1");
             const offersCollection = db.collection('Offer');
-            return await offersCollection.findOne({ _id: new ObjectId(id) });
+            return await offersCollection.findOne({ id: Number(id) });
         } catch (err) {
             console.error("Error retrieving offer by ID:", err);
         }
@@ -37,7 +37,7 @@ const Offer = {
             const db = client.db("gp1");
             const offersCollection = db.collection('Offer');
             const result = await offersCollection.updateOne(
-                { _id: new ObjectId(id) },
+                { id: Number(id) },
                 { $set: offerData }
             );
             return result;
@@ -49,7 +49,7 @@ const Offer = {
         try {
             const db = client.db("gp1");
             const offersCollection = db.collection('Offer');
-            const result = await offersCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await offersCollection.deleteOne({ id: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting offer:", err);

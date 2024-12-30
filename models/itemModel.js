@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require('mongodb');
+const { INTEGER } = require('sequelize');
 
 const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
 const client = new MongoClient(uri);
@@ -25,9 +26,12 @@ const Item = {
     },
     getById: async (id) => {
         try {
+            
             const db = client.db("gp1");
             const itemsCollection = db.collection('Item');
-            return await itemsCollection.findOne({ _id: new ObjectId(id) });
+            const y=await itemsCollection.findOne({ id: Number(id)});
+           
+            return y;
         } catch (err) {
             console.error("Error retrieving item by ID:", err);
         }
@@ -38,7 +42,7 @@ const Item = {
         const db = client.db("gp1");
         const itemsCollection = db.collection('Item');
         const result = await itemsCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { id: Number(id)},
             { 
                 $set: {
                     name: itemData.name,
@@ -57,7 +61,7 @@ const Item = {
         try {
             const db = client.db("gp1");
             const itemsCollection = db.collection('Item');
-            const result = await itemsCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await itemsCollection.deleteOne({ id: Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting item:", err);

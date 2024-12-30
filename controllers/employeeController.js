@@ -62,7 +62,7 @@ const EmployeeController = {
     addTask: async (req, res) => {
     try {
       const { employeeId,date,time,task,taskId,ownerId } = req.body;
-// console.log(date,time,task,taskId,ownerId);
+
       const result = await Employee.addTask(employeeId, date, time, task,taskId, ownerId);
       if (result.modifiedCount > 0) {
         res.status(200).json({ message: "Task added successfully" });
@@ -76,7 +76,9 @@ const EmployeeController = {
 
   removeTask: async (req, res) => {
     try {
-      const { employeeId, taskId } = req.body;
+          const employeeId = req.params.id;
+      const {  taskId } = req.body;
+  
       const result = await Employee.removeTask(employeeId, taskId);
       if (result.modifiedCount > 0) {
         res.status(200).json({ message: "Task removed successfully" });

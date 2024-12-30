@@ -3,7 +3,6 @@ const { MongoClient, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
 const client = new MongoClient(uri);
 
-
 const Employee = {
     create: async (employeeData) => {
         try {
@@ -28,7 +27,7 @@ const Employee = {
         try {
             const db = client.db("gp1");
             const employeesCollection = db.collection('employees');
-            return await employeesCollection.findOne({ _id: new ObjectId(id) });
+            return await employeesCollection.findOne({ id:Number(id)  });
         } catch (err) {
             console.error("Error retrieving employee by ID:", err);
         }
@@ -38,7 +37,7 @@ const Employee = {
         const db = client.db("gp1");
         const employeesCollection = db.collection('employees');
         const result = await employeesCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { id:Number(id) },
             { $set: { name: employeeData.name, position: employeeData.position } }
         );
         return result;
@@ -51,22 +50,20 @@ const Employee = {
         try {
             const db = client.db("gp1");
             const employeesCollection = db.collection('employees');
-            const result = await employeesCollection.deleteOne({ _id: new ObjectId(id) });
+            const result = await employeesCollection.deleteOne({ id:Number(id) });
             return result;
         } catch (err) {
             console.error("Error deleting employee:", err);
         }
     },
-     addTask: async (employeeId,date,time,task,taskid,owenerid) => {
-        console.log(date,time,task,taskid,owenerid);
+     addTask: async (id,date,time,task,taskid,owenerid) => {
+       
     try {
       const db = client.db("gp1");
       const employeesCollection = db.collection('employees');
       const result = await employeesCollection.updateOne(
-        { id: employeeId },
+        { id:Number(id) },
         { $push: { assignedTasks: {
-
-           
         'date': date,
         'time': time,
         'task': task,
@@ -80,19 +77,24 @@ const Employee = {
     }
   },
 
-  removeTask: async (employeeId, taskId) => {
+ removeTask: async (employeeId, taskId) => {
     try {
-      const db = client.db("gp1");
-      const employeesCollection = db.collection('employees');
-      const result = await employeesCollection.updateOne(
-        { _id: new ObjectId(employeeId) },
-        { $pull: { assignedTasks: { taskId } } }
-      );
-      return result;
+        
+
+        const db = client.db("gp1");
+        const employeesCollection = db.collection('employees');
+
+        const result = await employeesCollection.updateOne(
+            { id: Number(employeeId) }, 
+            { $pull: { assignedTasks: { taskId: taskId.toString() } } }
+        );
+
+       
+        return result;
     } catch (err) {
-      console.error("Error removing task from employee:", err);
+        console.error("Error removing task from employee:", err);
     }
-  }
+}
 };
 
 module.exports = Employee;

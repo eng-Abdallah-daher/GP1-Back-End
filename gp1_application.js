@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 bodyParser.json({ limit: '50mb' })
 
-
-
 const multer = require('./uploadimage');
 const cors = require('cors');
 
@@ -12,7 +10,6 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/salesRequestRoute');
 const maintenanceRequestRoutes = require('./routes/maintenanceRequestRoutes');
 const maintenanceRcordsRoutes = require('./routes/maintenanceRecords');
 const itemRoutes = require('./routes/itemRoutes');
@@ -38,7 +35,6 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/salesRequests', salesRequests);
-app.use('/api/comments', commentRoutes);
 app.use('/api/maintenanceRequests', maintenanceRequestRoutes);
 app.use('/api/maintenanceRcords', maintenanceRcordsRoutes);
 app.use('/api/items', itemRoutes);
@@ -76,7 +72,7 @@ app.post('/upload', async (req, res) => {
             message: 'Image uploaded successfully',
             
         }
-        console.log(obj);
+        
         res.status(200).json(obj);
     } catch (error) {
         console.error('Error in upload route:', error);
