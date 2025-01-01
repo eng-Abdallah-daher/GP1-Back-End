@@ -2,7 +2,20 @@ const UserSignUpRequest = require('../models/userSignUpRequestModel');
 
 const createUserSignUpRequests = async (req, res) => {
   try {
-    const { userRequests } = req.body;
+   
+    const userRequests={
+      'id':req.body['id'],
+      "name": req.body['name'],
+      "email": req.body['email'],
+      "phone": req.body['phone'],
+       'description':req.body['description'],
+      "latitude": req.body['latitude'],
+      "longitude": req.body['longitude'],
+      "images": req.body['images'],
+      "password": req.body['password'],
+         "location": req.body['location'],
+    }
+   
     const result = await UserSignUpRequest.createMany(userRequests);
     res.status(201).json({ message: 'User sign-up requests added successfully', result });
   } catch (error) {

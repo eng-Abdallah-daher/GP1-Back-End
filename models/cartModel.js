@@ -6,6 +6,7 @@ const client = new MongoClient(uri);
 const Cart = {
     create: async (cartData) => {
         try {
+                
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
             const result = await cartsCollection.insertOne(cartData);
@@ -27,6 +28,7 @@ const Cart = {
         try {
             const db = client.db("gp1");
             const cartsCollection = db.collection('carts');
+            
             return await cartsCollection.findOne({ cartId: Number(id)});
         } catch (err) {
             console.error("Error retrieving cart by ID:", err);
@@ -76,11 +78,30 @@ const Cart = {
                 {  cartId: Number(id) },
                 { $pull: { items: { id: itemId } } }
             );
+            
             return result;
         } catch (err) {
             console.error("Error removing item from cart:", err);
         }
-    }
+    },
+     updateItemQuantity :async (cartId, itemId, quantityChange) => {
+  try {
+    const db = client.db("gp1");
+    const cartsCollection = db.collection("carts");
+
+    const result = await cartsCollection.updateOne(
+      { cartId: Number(cartId), "items.id": itemId },
+      {
+        $set: { "items.$.availableQuantity": quantityChange }
+      }
+    );
+
+    return result;
+  } catch (err) {
+    console.error("Error updating item quantity in cart:", err);
+    throw err;
+  }
+}
 };
 
 module.exports = Cart;

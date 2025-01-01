@@ -145,9 +145,7 @@ const PostController = {
     const { postId, commentId, replyId } = req.params;
     const { newText } = req.body;
     const result = await Post.editReply(postId, commentId, replyId, newText);
-    if(result){
-        console.log(result);
-    }
+    
     res.status(200).json({ message: 'Reply updated successfully', data: result });
   } catch (error) {
     res.status(500).json({ message: 'Error updating reply', error });

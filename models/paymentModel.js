@@ -1,60 +1,55 @@
-const { MongoClient, ObjectId } = require('mongodb');
+const { MongoClient } = require('mongodb');
 
 const uri = "mongodb+srv://gp1:gp1password123@gp1.u2rpm.mongodb.net/?retryWrites=true&w=majority&appName=gp1";
 const client = new MongoClient(uri);
 
-const Payment = {
-    create: async (paymentData) => {
-        try {
-            const db = client.db("gp1");
-            const paymentsCollection = db.collection('payments');
-            const result = await paymentsCollection.insertOne(paymentData);
-            return result;
-        } catch (err) {
-            console.error("Error creating payment:", err);
-        }
+const PaymentRecord = {
+    create: async (recordData) => {
+        const db = client.db("gp1");
+        const collection = db.collection('PaymentRecord');
+        return await collection.insertOne(recordData);
     },
     getAll: async () => {
+        const db = client.db("gp1");
+        const collection = db.collection('PaymentRecord');
+        return await collection.find().toArray();
+    },
+    getByUserId: async (userId) => {
+        const db = client.db("gp1");
+        const collection = db.collection('PaymentRecord');
+        return await collection.find({ userId }).toArray();
+    },
+     getByQuery: async (userId, year, month) => {
         try {
             const db = client.db("gp1");
-            const paymentsCollection = db.collection('payments');
-            return await paymentsCollection.find().toArray();
+            const collection = db.collection("PaymentRecord");
+            const record = await collection.findOne({
+                userId: Number(userId),
+                year: Number(year),
+                month: Number(month)
+            });
+            return record;
         } catch (err) {
-            console.error("Error retrieving all payments:", err);
+            console.error("Error fetching payment record:", err);
+            return null;
         }
     },
-    getById: async (id) => {
-        try {
-            const db = client.db("gp1");
-            const paymentsCollection = db.collection('payments');
-            return await paymentsCollection.findOne({ _id: new ObjectId(id) });
-        } catch (err) {
-            console.error("Error retrieving payment by ID:", err);
-        }
+    updatePaymentStatus: async (userId, year, month, paid) => {
+        
+        const db = client.db("gp1");
+        const collection = db.collection('PaymentRecord');
+        return await collection.updateOne(
+            { userId, year, month },
+            { $set: { paid } },
+            { upsert: true }
+        );
     },
-    update: async (id, paymentData) => {
-        try {
-            const db = client.db("gp1");
-            const paymentsCollection = db.collection('payments');
-            const result = await paymentsCollection.updateOne(
-                { _id: new ObjectId(id) },
-                { $set: paymentData }
-            );
-            return result;
-        } catch (err) {
-            console.error("Error updating payment:", err);
-        }
-    },
-    delete: async (id) => {
-        try {
-            const db = client.db("gp1");
-            const paymentsCollection = db.collection('payments');
-            const result = await paymentsCollection.deleteOne({ _id: new ObjectId(id) });
-            return result;
-        } catch (err) {
-            console.error("Error deleting payment:", err);
-        }
+    deleteById: async (Id) => {
+        
+        const db = client.db("gp1");
+        const collection = db.collection('PaymentRecord');
+        return await collection.deleteOne({ id:Number(Id) });
     }
 };
 
-module.exports = Payment;
+module.exports = PaymentRecord;

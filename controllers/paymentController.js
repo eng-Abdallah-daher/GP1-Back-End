@@ -1,63 +1,62 @@
-const Payment = require('../models/paymentModel');
+const PaymentRecord = require('../models/paymentModel');
 
-const PaymentController = {
-    create: async (req, res) => {
-        try {
-            const paymentData = req.body;
-            const result = await Payment.create(paymentData);
-            res.status(201).json({ message: 'Payment created successfully', data: result });
-        } catch (error) {
-            res.status(500).json({ message: 'Error creating payment', error });
-        }
-    },
-    getAll: async (req, res) => {
-        try {
-            const payments = await Payment.getAll();
-            res.status(200).json({ message: 'Payments retrieved successfully', data: payments });
-        } catch (error) {
-            res.status(500).json({ message: 'Error retrieving payments', error });
-        }
-    },
-    getById: async (req, res) => {
-        try {
-            const paymentId = req.params.id;
-            const payment = await Payment.getById(paymentId);
-            if (payment) {
-                res.status(200).json({ message: 'Payment retrieved successfully', data: payment });
-            } else {
-                res.status(404).json({ message: 'Payment not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ message: 'Error retrieving payment', error });
-        }
-    },
-    update: async (req, res) => {
-        try {
-            const paymentId = req.params.id;
-            const paymentData = req.body;
-            const result = await Payment.update(paymentId, paymentData);
-            if (result.matchedCount > 0) {
-                res.status(200).json({ message: 'Payment updated successfully', data: result });
-            } else {
-                res.status(404).json({ message: 'Payment not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ message: 'Error updating payment', error });
-        }
-    },
-    delete: async (req, res) => {
-        try {
-            const paymentId = req.params.id;
-            const result = await Payment.delete(paymentId);
-            if (result.deletedCount > 0) {
-                res.status(200).json({ message: 'Payment deleted successfully' });
-            } else {
-                res.status(404).json({ message: 'Payment not found' });
-            }
-        } catch (error) {
-            res.status(500).json({ message: 'Error deleting payment', error });
-        }
-    }
+const createPaymentRecord = async (req, res) => {
+    const { userId, year, month, paid,id } = req.body;
+    
+    const result = await PaymentRecord.create({ userId, year, month, paid ,id});
+    res.json(result);
 };
 
-module.exports = PaymentController;
+const getAllPaymentRecords = async (req, res) => {
+    const records = await PaymentRecord.getAll();
+    res.json(records);
+};
+
+const getUserPaymentHistory = async (req, res) => {
+    const { userId } = req.params;
+    const records = await PaymentRecord.getByUserId(Number(userId));
+    res.json(records);
+};
+
+const updatePaymentStatus = async (req, res) => {
+    const { userId, year, month, paid } = req.body;
+    
+    const result = await PaymentRecord.updatePaymentStatus(
+        Number(userId),
+        Number(year),
+        Number(month),
+        paid
+    );
+    res.json(result);
+};
+ const hasPaid= async (req, res) => {
+        const { userId, year, month } = req.body;
+
+        if (!userId || !year || !month) {
+            return res.status(400).json({ error: "Missing required fields: userId, year, or month" });
+        }
+
+        try {
+            const record = await PaymentRecord.getByQuery(userId, year, month);
+            const paid = record ? record.paid : false;
+            return res.status(200).json({ paid });
+        } catch (err) {
+            console.error("Error in hasPaid controller:", err);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    };
+const deletePaymentRecords = async (req, res) => {
+    const {id} = req.params;
+    const result = await PaymentRecord.deleteById(id);
+
+    res.json(result);
+};
+
+module.exports = {
+    createPaymentRecord,
+    getAllPaymentRecords,
+    getUserPaymentHistory,
+    updatePaymentStatus,
+    deletePaymentRecords,
+    hasPaid
+};

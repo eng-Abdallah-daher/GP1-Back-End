@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/upload', async (req, res) => {
+app.post('/upload', async (req, res) => { 
     
     try {
         const { imageData } = req.body;  

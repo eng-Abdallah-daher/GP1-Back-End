@@ -8,6 +8,7 @@ router.get('/:id', UserController.getById);
 router.put('/:id', UserController.update);
 router.put('/:id/password', UserController.updatePassword); 
 router.put('/:id/activestatus', UserController.updateactivestatus); 
+router.put('/:id/profileimage', UserController.updateprofileimage); 
 router.delete('/:id', UserController.delete);
 router.get('/email/:email', UserController.getByEmail);
 router.post('/authenticate', UserController.authenticate);

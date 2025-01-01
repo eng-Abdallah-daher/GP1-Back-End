@@ -89,7 +89,7 @@ addLike: async (id, userId) => {
    
     updateComment: async (postId, commentId, updatedCommentData) => {
         try {
-            console.log(updatedCommentData)
+            
             const db = client.db("gp1");
             const postsCollection = db.collection('Post');
             const result = await postsCollection.updateOne(
@@ -150,7 +150,7 @@ addLike: async (id, userId) => {
   editReply:async(postId, commentId, replyId, newText) =>{
 
   try {
-    console.log(postId, commentId, replyId, newText);
+    
     const db = client.db('gp1');
     const postsCollection = db.collection('Post');
     const result = await postsCollection.updateOne(

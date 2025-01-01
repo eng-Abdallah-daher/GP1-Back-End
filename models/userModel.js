@@ -81,6 +81,18 @@ const User = {
             console.error(err);
         }
     },
+    updateprofileimage: async (id, newimage) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+       
+
+            const result = await usersCollection.updateOne({ email: id }, { $set: { profileImage: newimage } });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
     delete: async (id) => {
         try {
             const db = client.db("gp1");
