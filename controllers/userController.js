@@ -87,6 +87,22 @@ const UserController = {
             res.status(500).json({ message: 'Error updating image', error });
         }
     },
+      updateonlinestatus: async (req, res) => {
+        try {
+            const email = req.params.email;
+            
+            const { status } = req.body;
+           
+            const result = await User.updateonlinestatus(email, status);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'status updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating status', error });
+        }
+    },
     delete: async (req, res) => {
         try {
             const userId = req.params.id;
@@ -125,7 +141,8 @@ const UserController = {
         } catch (error) {
             res.status(500).json({ message: 'Error authenticating user', error });
         }
-    },addRateToUser : async (req, res) => {
+    },
+    addRateToUser : async (req, res) => {
     const { id } = req.params;
     const { rate } = req.body; 
 
@@ -138,13 +155,36 @@ const UserController = {
         if (result.modifiedCount > 0) {
             res.status(200).json({ message: "Rate added successfully" });
         } else {
-            res.status(404).json({ message: "User not found" });
+            res.status(404).json({ message: "User not foundpppp" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+},
+deleteRate : async (req, res) => {
+    const { id } = req.params;
+    const { rate } = req.body;
+
+    if (!rate || isNaN(rate)) {
+        return res.status(400).json({ message: "Invalid rate value" });
+    }
+
+    try {
+        const parsedRate = parseInt(rate);
+        const result = await User.removeRate(id, parsedRate);
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: "Rate removed successfully" });
+        } else {
+            res.status(404).json({ message: "User not found or rate does not exist" });
         }
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
 }; 
 
 module.exports = UserController;

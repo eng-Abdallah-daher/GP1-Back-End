@@ -1,4 +1,5 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 bodyParser.json({ limit: '50mb' })
 
@@ -6,6 +7,7 @@ const multer = require('./uploadimage');
 const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
+const sendEmailRoutes = require('./routes/sendemail');
 const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
@@ -30,6 +32,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/api/users', userRoutes);
+app.use('/api', sendEmailRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/complaints', complaintRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -48,7 +51,9 @@ app.use('/api/availableSchedules', availableSchedules);
 
 app.use('/api/towingservices',towingserviceRoutes);
 app.use('/api/usersignuprequests', usersignuprequests);
+
 app.get('/', (req, res) => {
+    
     res.send('Server is running...');
 });
 
@@ -91,6 +96,5 @@ async function startServer() {
         process.exit(1);
     }
 }
-
 
 startServer();

@@ -27,10 +27,11 @@ const User = {
     },
     addRate: async (id, rate) => {
     try {
+        
         const db = client.db("gp1");
         const usersCollection = db.collection('User');
         const result = await usersCollection.updateOne(
-            { _id: new ObjectId(id) },
+            { id: Number(id) },
             { $push: { rates: rate } }
         );
         return result;
@@ -63,7 +64,7 @@ const User = {
         try {
             const db = client.db("gp1");
             const usersCollection = db.collection('User');
-            const result = await usersCollection.updateOne({ _id: new ObjectId(id) }, { $set: { password: newPassword } });
+            const result = await usersCollection.updateOne({ email: id }, { $set: { password: newPassword } });
             return result;
         } catch (err) {
             console.error(err);
@@ -88,6 +89,18 @@ const User = {
        
 
             const result = await usersCollection.updateOne({ email: id }, { $set: { profileImage: newimage } });
+            return result;
+        } catch (err) {
+            console.error(err);
+        }
+    },
+    updateonlinestatus: async (email, newstatus) => {
+        try {
+            const db = client.db("gp1");
+            const usersCollection = db.collection('User');
+       
+
+            const result = await usersCollection.updateOne({ email: email}, { $set: { online: newstatus } });
             return result;
         } catch (err) {
             console.error(err);
@@ -120,7 +133,20 @@ const User = {
         } catch (err) {
             console.error(err);
         }
+    },
+    removeRate : async (id, rate) => {
+    try {
+        const db = client.db("gp1");
+        const usersCollection = db.collection("User");
+        const result = await usersCollection.updateOne(
+            { id: Number(id) },
+            { $pull: { rates: rate } }
+        );
+        return result;
+    } catch (err) {
+        console.error(err);
     }
+}
 };
 
 module.exports = User;

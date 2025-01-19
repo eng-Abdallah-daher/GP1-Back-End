@@ -9,8 +9,11 @@ router.put('/:id', UserController.update);
 router.put('/:id/password', UserController.updatePassword); 
 router.put('/:id/activestatus', UserController.updateactivestatus); 
 router.put('/:id/profileimage', UserController.updateprofileimage); 
+router.put('/:email/onlinestatus', UserController.updateonlinestatus); 
 router.delete('/:id', UserController.delete);
 router.get('/email/:email', UserController.getByEmail);
 router.post('/authenticate', UserController.authenticate);
-router.post('newrate/:id/rate', UserController.addRateToUser);
+router.post('/newrate/:id', UserController.addRateToUser);
+router.delete('/rates/:id', UserController.deleteRate);
+
 module.exports = router;

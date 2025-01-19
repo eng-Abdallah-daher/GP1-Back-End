@@ -39,7 +39,7 @@ const Complaint = {
             const complaintsCollection = db.collection('complaints');
             const result = await complaintsCollection.updateOne(
                 { id:Number(id) },
-                { $set: complaintData }
+                { $set: { rate: complaintData.rate,description:complaintData.description }}
             );
             return result;
         } catch (err) {
