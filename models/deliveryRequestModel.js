@@ -48,13 +48,13 @@ const DeliveryRequest = {
             console.error("Error updating delivery request:", err);
         }
     },
-     updatestatus: async (id, deliveryRequestData) => {
+     updatestatus: async (id, status) => {
         try {
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
             const result = await deliveryRequestsCollection.updateOne(
                 { id:Number(id) },
-                { $set: { status: deliveryRequestData.status } }
+                { $set: { status: status } }
             );
             return result;
         } catch (err) {

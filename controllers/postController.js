@@ -150,6 +150,16 @@ const PostController = {
   } catch (error) {
     res.status(500).json({ message: 'Error updating reply', error });
   }
+},
+deletereply: async(req, res)=> {
+  try {
+    const { postId, commentId, replyId } = req.params;
+    const result = await Post.removeReply(postId, commentId, replyId);
+    
+    res.status(200).json({ message: 'Reply deleted successfully', data: result });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting reply', error });
+  }
 }
 
 };

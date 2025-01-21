@@ -48,8 +48,8 @@ const DeliveryRequestController = {
      updatestatus: async (req, res) => {
         try {
             const deliveryRequestId = req.params.id;
-            const deliveryRequestData = req.body;
-            const result = await DeliveryRequest.updatestatus(deliveryRequestId, deliveryRequestData);
+            const status = req.body;
+            const result = await DeliveryRequest.updatestatus(deliveryRequestId, status);
             if (result.matchedCount > 0) {
                 res.status(200).json({ message: 'Delivery request updated successfully', data: result });
             } else {

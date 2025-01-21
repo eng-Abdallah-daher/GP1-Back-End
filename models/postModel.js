@@ -154,9 +154,9 @@ addLike: async (id, userId) => {
     const db = client.db('gp1');
     const postsCollection = db.collection('Post');
     const result = await postsCollection.updateOne(
-      { id: postId, 'comments.commentid': commentId, 'comments.replies.commentid': replyId },
+      { id: Number(postId), 'comments.commentid': Number(commentId), 'comments.replies.commentid': Number(replyId) },
       { $set: { 'comments.$[comment].replies.$[reply].text': newText } },
-      { arrayFilters: [{ 'comment.commentid': commentId }, { 'reply.commentid': replyId }] }
+      { arrayFilters: [{ 'comment.commentid': Number(commentId) }, { 'reply.commentid': Number(replyId) }] }
     );
     return result;
   } catch (error) {
@@ -165,7 +165,35 @@ addLike: async (id, userId) => {
     
   }
 
+  },
+ removeReply: async (postId, commentId, replyId) => {
+  try {
+   
+    const db = client.db('gp1');
+    const postsCollection = db.collection('Post');
+
+    const result = await postsCollection.updateOne(
+      { id: Number(postId), 'comments.commentid': Number(commentId) },
+      { 
+        $pull: { 'comments.$.replies': { commentid: Number(replyId) } }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      throw new Error('Reply not found');
+    }
+      await postsCollection.updateOne(
+          { id: Number(postId) },
+          { $inc: { commentCount: -1 } }
+        );
+
+    return result;
+  } catch (error) {
+    console.error("Error removing reply:", error);
   }
+}
+
+
 }
 
 module.exports = Post;

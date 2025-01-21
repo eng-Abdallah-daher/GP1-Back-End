@@ -87,7 +87,7 @@ app.post('/upload', async (req, res) => {
 
 async function startServer() {
     try {
-        
+      
         app.listen(port, () => {
             console.log(`Server is running on http://localhost:${port}`);
         });
@@ -96,5 +96,8 @@ async function startServer() {
         process.exit(1);
     }
 }
+
+
+
 
 startServer();
