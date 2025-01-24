@@ -28,6 +28,7 @@ async function uploadImage(base64Data) {
     );
 
     const uploadResult = response.data.data;
+    console.log("Upload Result:", response);
     const imageUrl = uploadResult.link;
     y = imageUrl;
 

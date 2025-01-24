@@ -91,7 +91,7 @@ async function startServer() {
     try {
       
         app.listen(port, () => {
-            console.log(`Server is running on http://localhost:${port}`);
+            console.log(`Server is running on http://localhost:${port} try the server`);
         });
     } catch (err) {
         console.error('Failed to start the server:', err);
