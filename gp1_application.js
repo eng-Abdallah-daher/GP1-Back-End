@@ -7,6 +7,7 @@ const multer = require('./uploadimage');
 const cors = require('cors');
 
 const userRoutes = require('./routes/userRoutes');
+const PostReport = require('./routes/postReportRoutes');
 const sendEmailRoutes = require('./routes/sendemail');
 const paymentRoutes = require('./routes/paymentRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
@@ -32,6 +33,7 @@ const port = 3000;
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use('/api/users', userRoutes);
+app.use('/api/postReports', PostReport);
 app.use('/api', sendEmailRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/complaints', complaintRoutes);

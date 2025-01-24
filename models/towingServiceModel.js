@@ -32,13 +32,20 @@ const TowingService = {
             console.error("Error retrieving towing service by ID:", err);
         }
     },
-    update: async (id, towingServiceData) => {
+    update: async (id, name,address,phone) => {
         try {
+            console.log(id, name, address, phone);
             const db = client.db("gp1");
             const towingServicesCollection = db.collection('towingServices');
             const result = await towingServicesCollection.updateOne(
-                { id:Number(id) },
-                { $set: towingServiceData }
+              { id: Number(id) },
+              {
+                $set: {
+                  name: name,
+                  address: address,
+                  phone: phone,
+                },
+              }
             );
             return result;
         } catch (err) {

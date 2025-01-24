@@ -14,6 +14,8 @@ const createUserSignUpRequests = async (req, res) => {
       "images": req.body['images'],
       "password": req.body['password'],
          "location": req.body['location'],
+         "gender": req.body['gender'],
+         "bitrh": req.body['birthDate'],
     }
    
     const result = await UserSignUpRequest.createMany(userRequests);

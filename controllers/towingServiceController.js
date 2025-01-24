@@ -36,8 +36,8 @@ const TowingServiceController = {
     update: async (req, res) => {
         try {
             const towingServiceId = req.params.id;
-            const towingServiceData = req.body;
-            const result = await TowingService.update(towingServiceId, towingServiceData);
+            const {name,address,phone} = req.body;
+            const result = await TowingService.update(towingServiceId, name,address, phone);
             if (result.matchedCount > 0) {
                 res.status(200).json({ message: 'Towing Service updated successfully', data: result });
             } else {

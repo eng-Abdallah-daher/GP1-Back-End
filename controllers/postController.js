@@ -34,8 +34,8 @@ const PostController = {
     update: async (req, res) => {
         try {
             const postId = req.params.id;
-            const postData = req.body;
-            const result = await Post.update(postId, postData);
+            const description = req.body;
+            const result = await Post.update(postId, description);
             if (result.matchedCount > 0) {
                 res.status(200).json({ message: 'Post updated successfully', data: result });
             } else {

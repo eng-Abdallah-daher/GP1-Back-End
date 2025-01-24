@@ -32,7 +32,7 @@ const User = {
         const usersCollection = db.collection('User');
         const result = await usersCollection.updateOne(
             { id: Number(id) },
-            { $push: { rates: rate } }
+            { $set: { rate: rate } }
         );
         return result;
     } catch (err) {

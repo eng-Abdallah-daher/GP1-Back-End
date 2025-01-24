@@ -38,7 +38,7 @@ const Post = {
             const postsCollection = db.collection('Post');
             const result = await postsCollection.updateOne(
                 {id: Number(id) },
-                { $set: postData }
+                { $set:{description:postData}  }
             );
             return result;
         } catch (err) {

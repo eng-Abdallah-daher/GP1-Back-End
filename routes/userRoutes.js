@@ -14,6 +14,6 @@ router.delete('/:id', UserController.delete);
 router.get('/email/:email', UserController.getByEmail);
 router.post('/authenticate', UserController.authenticate);
 router.post('/newrate/:id', UserController.addRateToUser);
-router.delete('/rates/:id', UserController.deleteRate);
+
 
 module.exports = router;

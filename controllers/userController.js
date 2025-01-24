@@ -146,7 +146,7 @@ const UserController = {
     const { id } = req.params;
     const { rate } = req.body; 
 
-    if (!rate || isNaN(rate)) {
+    if (isNaN(rate)) {
         return res.status(400).json({ message: "Invalid rate value" });
     }
 
