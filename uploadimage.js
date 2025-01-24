@@ -24,11 +24,12 @@ async function uploadImage(base64Data) {
           Authorization: `Client-ID ${CLIENT_ID}`,
           "Content-Type": "application/json",
         },
+        maxContentLength: 50 * 1024 * 1024, 
+        maxBodyLength: 50 * 1024 * 1024, 
       }
     );
 
     const uploadResult = response.data.data;
-    console.log("Upload Result:", response);
     const imageUrl = uploadResult.link;
     y = imageUrl;
 
