@@ -1,26 +1,36 @@
 const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const path = require("path");
 
-async function uploadToImgur(base64Data) {
-  const clientId = "bae1c7177f1cb8d"; 
+async function uploadToPinata(base64Data) {
+  const apiKey = "09c63fd4cbc88778169f";
+  const apiSecret = "1fb156b37a0fe8cb18fab797b03b40a6284f32a3cac06e213d146f0a2b8ade1e";
+  const url = "https://api.pinata.cloud/pinning/pinFileToIPFS";
+
+  const buffer = Buffer.from(base64Data.split(",")[1], "base64");
+  const tempPath = path.join(__dirname, `image_${Date.now()}.png`);
+  fs.writeFileSync(tempPath, buffer);
+
+  const formData = new FormData();
+  formData.append("file", fs.createReadStream(tempPath));
 
   try {
-    const response = await axios.post(
-      "https://api.imgur.com/3/image",
-      { image: base64Data.split(",")[1] }, 
-      {
-        headers: {
-          Authorization: `Client-ID ${clientId}`,
-        },
-      }
-    );
+    const response = await axios.post(url, formData, {
+      headers: {
+        ...formData.getHeaders(),
+        pinata_api_key: apiKey,
+        pinata_secret_api_key: apiSecret,
+      },
+    });
 
-    const imageUrl = response.data.data.link;
-    console.log("Image URL:", imageUrl);
-    return imageUrl;
+    fs.unlinkSync(tempPath); 
+    console.log(`https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`)
+    return `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
   } catch (error) {
-    console.error("Error uploading to Imgur:", error.response?.data || error.message);
+    fs.unlinkSync(tempPath); 
     throw error;
   }
 }
 
-module.exports = uploadToImgur;
+module.exports = uploadToPinata;
