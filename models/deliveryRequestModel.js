@@ -50,11 +50,12 @@ const DeliveryRequest = {
     },
      updatestatus: async (id, status) => {
         try {
+            console.log(status['status'])
             const db = client.db("gp1");
             const deliveryRequestsCollection = db.collection('deliveryRequests');
             const result = await deliveryRequestsCollection.updateOne(
-                { id:Number(id) },
-                { $set: { status: status } }
+              { id: Number(id) },
+              { $set: { status: status["status"] } }
             );
             return result;
         } catch (err) {
