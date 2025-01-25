@@ -9,12 +9,15 @@
     "express": "^4.21.2",
     "form-data": "^4.0.1",
     "fs": "^0.0.1-security",
+    "fuzzyset.js": "^1.0.7",
     "mongodb": "^6.11.0",
     "mongoose": "^8.8.3",
+    "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.16",
     "parser": "^0.1.4",
     "path": "^0.12.7",
     "pdfkit": "^0.16.0",
+    "spellchecker": "^3.7.1",
     "stripe": "^17.5.0"
   },
   "devDependencies": {

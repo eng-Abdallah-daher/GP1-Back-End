@@ -1,12 +1,12 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 bodyParser.json({ limit: '50mb' })
 
 const multer = require('./uploadimage');
 const cors = require('cors');
 
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require("./routes/userRoutes");
+const estimate = require("./routes/estimateroute");
 const PostReport = require('./routes/postReportRoutes');
 const sendEmailRoutes = require('./routes/sendemail');
 const paymentRoutes = require('./routes/paymentRoutes');
@@ -26,13 +26,15 @@ const salesRequests=require('./routes/salesRequestRoute');
 const towingserviceRoutes= require('./routes/towingServiceRoutes');
 const usersignuprequests= require('./routes/userSignUpRequestRoute');
 const availableSchedules= require('./routes/availableSchedulesRoute');
+const { estimateRepairCost } = require('./controllers/estimateController');
 const app = express();
 const port = 3000;
 
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
-app.use('/api/users', userRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/estimate", estimate);
 app.use('/api/postReports', PostReport);
 app.use('/api', sendEmailRoutes);
 app.use('/api/payments', paymentRoutes);
@@ -89,8 +91,7 @@ app.post('/upload', async (req, res) => {
 
 async function startServer() {
     try {
-      
-        app.listen(port, () => {
+     app.listen(port, () => {
             console.log(`Server is running on http://localhost:${port}`);
         });
     } catch (err) {
