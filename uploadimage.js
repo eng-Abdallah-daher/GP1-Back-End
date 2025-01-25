@@ -1,50 +1,26 @@
-const cloudinary = require("cloudinary").v2;
-const fs = require("fs");
-const path = require("path");
+const axios = require("axios");
 
-async function uploadImage(base64Data) {
-  let y;
-  cloudinary.config({
-    cloud_name: "dkass9jnq",
-    api_key: "936456332441919",
-    api_secret: "xzgm6MxZXjwS_n1bzjGquAO7tsQ",
-  });
+async function uploadToImgur(base64Data) {
+  const clientId = "bae1c7177f1cb8d"; 
 
   try {
-    const buffer = Buffer.from(base64Data.split(",")[1], "base64");
-    const tempPath = path.join(__dirname, "temp_image.png");
-    fs.writeFileSync(tempPath, buffer);
+    const response = await axios.post(
+      "https://api.imgur.com/3/image",
+      { image: base64Data.split(",")[1] }, 
+      {
+        headers: {
+          Authorization: `Client-ID ${clientId}`,
+        },
+      }
+    );
 
-    const uploadResult = await cloudinary.uploader.upload(tempPath, {
-      public_id: path.basename(tempPath, path.extname(tempPath)),
-    });
-
-    console.log("Upload Result:", uploadResult);
-
-    const imageUrl = uploadResult.secure_url;
-
+    const imageUrl = response.data.data.link;
     console.log("Image URL:", imageUrl);
-    y = imageUrl;
-    const optimizedUrl = cloudinary.url(uploadResult.public_id, {
-      fetch_format: "auto",
-      quality: "auto",
-    });
-
-    console.log("Optimized Image URL:", optimizedUrl);
-
-    const autoCropUrl = cloudinary.url(uploadResult.public_id, {
-      crop: "auto",
-      gravity: "auto",
-      width: 500,
-      height: 500,
-    });
-    console.log("Auto-cropped Image URL:", autoCropUrl);
-
-    fs.unlinkSync(tempPath);
+    return imageUrl;
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error("Error uploading to Imgur:", error.response?.data || error.message);
+    throw error;
   }
-  return y;
 }
 
-module.exports = uploadImage;
+module.exports = uploadToImgur;
