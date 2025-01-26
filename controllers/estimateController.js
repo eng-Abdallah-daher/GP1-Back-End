@@ -64,7 +64,7 @@ function estimateRepairCost(description) {
     };
   }
 
-  return { numberOfProblems: 0, totalCost: 300 };
+  return { numberOfProblems: 0, totalCost: 0 };
 }
 
 module.exports = {
