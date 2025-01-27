@@ -73,11 +73,25 @@ const UserController = {
             res.status(500).json({ message: 'Error updating status', error });
         }
     },
-       updateprofileimage: async (req, res) => {
+    updateprofileimage: async (req, res) => {
         try {
             const userId = req.params.id;
             const { newimage } = req.body;
             const result = await User.updateprofileimage(userId, newimage);
+            if (result.matchedCount > 0) {
+                res.status(200).json({ message: 'image updated successfully', data: result });
+            } else {
+                res.status(404).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            res.status(500).json({ message: 'Error updating image', error });
+        }
+    },
+    updateaccountnumber: async (req, res) => {
+        try {
+            const userId = req.params.id;
+            const { accountnumber } = req.body;
+            const result = await User.updateaccountnumber(userId, accountnumber);
             if (result.matchedCount > 0) {
                 res.status(200).json({ message: 'image updated successfully', data: result });
             } else {

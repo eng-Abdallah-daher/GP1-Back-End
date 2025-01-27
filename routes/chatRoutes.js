@@ -6,6 +6,7 @@ router.post('/', chatController.createChat);
 router.get('/', chatController.getAllChats);
 router.get('/:id', chatController.getChatById);
 router.put('/add-message', chatController.addMessageToChat);
+router.post('/message-read', chatController.updatemessageread);
 router.put('/remove-message', chatController.removeMessageFromChat);
 router.delete('/:id', chatController.deleteChat);
 

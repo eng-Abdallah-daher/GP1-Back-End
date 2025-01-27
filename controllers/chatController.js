@@ -51,9 +51,19 @@ const updateChat = async (req, res) => {
 
 const addMessageToChat = async (req, res) => {
     try {
-        const { id,senderId, content ,createdAt} = req.body;
-      
-        const result = await Chat.addMessage(id,senderId, content ,createdAt);
+        const { id, msgid, senderId, content, createdAt, isread } = req.body;
+
+        const result = await Chat.addMessage(id, senderId, content, createdAt, msgid, isread);
+        res.status(200).json({ message: 'Message added to chat successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding message to chat', error });
+    }
+};
+const updatemessageread = async (req, res) => {
+    try {
+        const { id, msgid } = req.body;
+
+        const result = await Chat.updatemessageread(id, msgid);
         res.status(200).json({ message: 'Message added to chat successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Error adding message to chat', error });
@@ -90,5 +100,7 @@ module.exports = {
     updateChat,
     addMessageToChat,
     removeMessageFromChat,
-    deleteChat
+    deleteChat,
+    updatemessageread,
+ 
 };

@@ -6,6 +6,7 @@ const client = new MongoClient(uri);
 const Chat = {
     create: async (chatData) => {
         try {
+          
             const db = client.db("gp1");
             const chatsCollection = db.collection('Chat');
             const result = await chatsCollection.insertOne(chatData);
@@ -75,7 +76,26 @@ getById: async (id) => {
             console.error("Error deleting chat:", err);
         }
     },
-   addMessage: async (chatId,v1,v2,v3) => {
+    updatemessageread: async (chatId, msgId) => {
+        try {
+            const db = client.db("gp1");
+            const chatsCollection = db.collection("Chat");
+
+            const result = await chatsCollection.updateOne(
+                { id: chatId, "messages.id": msgId }, 
+                { $set: { "messages.$.isread": true } } 
+            );
+
+            if (result.matchedCount === 0) {
+                throw new Error(`Chat with id ${chatId} or message with id ${msgId} not found.`);
+            }
+
+            return result;
+        } catch (err) {
+            console.error("Error updating message read status:", err);
+        }
+    },
+   addMessage: async (chatId,v1,v2,v3,v4,v5) => {
     try {
         const db = client.db("gp1");
         const chatsCollection = db.collection("Chat");
@@ -85,10 +105,12 @@ getById: async (id) => {
             { id: chatId },
             {
                 $push: { messages: {
-                    id: new ObjectId(),
+                    id:v4,
                     senderId: v1,
                     content: v2,
                     createdAt: v3,
+                    isread:v5
+
                 } },
                 $set: { lastMessage: v3 },
             }
